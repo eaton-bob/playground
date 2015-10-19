@@ -12,34 +12,37 @@
 
 bool ison()
 {
-	return true;
+	return random()%2;
 }
 
 
 int main (int argc, char ** argv) {
 
-	if(argc<2)
+	if(argc<3)
 	{
-		std::cout << "Usage: " << argv[0] << " <upsname>" << std::endl;
+		std::cout << "Usage: " << argv[0] << " <address> <upsname>" << std::endl;
 		return -1;
 	}
-	
-	std::string upsname = argv[1];
-	
+
+	std::string upsname = argv[2];
+
     //  Prepare our context and socket
     zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_PUB);
-    socket.connect ("tcp://*:5560");
+    socket.connect ((std::string("tcp://") + argv[1] + ":5560").c_str());
 
     while (1) {
 
         //  Publish status
 		socket.send(upsname.data(), upsname.size(), ZMQ_SNDMORE);
-		if(ison())
+		if(ison()) {
 			socket.send("ON", 2, 0);
-		else
+			fprintf(stderr,"UPS %s ON\n", upsname.data());
+		} else {
 			socket.send("OFF", 3, 0);
-		
+			fprintf(stderr,"UPS %s OFF\n", upsname.data());
+		}
+
 		// wait 1 sec
 		sleep(1);
     }

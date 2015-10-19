@@ -1,20 +1,27 @@
 #include <czmq.h>
+#include <zyre.h>
 #include <string>
 #include <map>
 #include <utility>
 #include <iostream>
 #include <vector>
-#include <unistd.h>
 #include "monitor.h"
 
+//#include "monitor.h"
+
+/* \file    monitor.cc
+   \details listens on :5560 for events from counteragents like UPS and
+            selectively pushes alerts to :5561; see rfc in top dir
+ */
+
 int main (int argc, char **argv) {
+    if (argc < 2)
+        return EXIT_FAILURE;
 
     zyre_t *node = zyre_new ("monitor");
     assert (node);
-    char hostname[128];
-    gethostname(hostname, 128);
-    zyre_set_header (node, "HAP_SERVER", "%s", hostname);
-    zyre_set_header (node, "HAP_SERVER", "%s", hostname);
+    zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append("5560").c_str ());
+    zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append("5561").c_str ());
     zyre_start (node);
 
 
@@ -30,7 +37,7 @@ int main (int argc, char **argv) {
     rv = zsock_bind (pub, "tcp://*:5561");
     assert (rv != -1);
 
-    //  Set-up poller (oroginally we had rep.. too lazy to remove)
+    // Set-up poller (originally we had rep... too lazy to remove)
     zpoller_t *poller = zpoller_new (sub, NULL);
     assert (poller);
 
