@@ -25,7 +25,7 @@ clean:
 	$(RM) -f $(PROGRAMS)
 
 $(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -lzyre -o $@ $^
+	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
 
 $(PROGRAM_UPS): ups/ups.c
 	$(CC) $(CFLAGS) -o $@ $^
@@ -41,7 +41,7 @@ $(PROGRAM_UPSXX): ups/ups.cxx
 	fi
 
 $(PROGRAM_MON): monitor/monitor.cc
-	$(CXX) $(CXXFLAGS) -lzyre -o $@ $^
+	$(CXX) $(CXXFLAGS) $(CFLAGS_ZYRE) -o $@ $^
 
 testz: $(PROGRAM_ZYRE_TRIVIAL)
 	./$(PROGRAM_ZYRE_TRIVIAL)
