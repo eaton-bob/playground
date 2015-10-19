@@ -4,10 +4,19 @@
 #include <utility>
 #include <iostream>
 #include <vector>
-
+#include <unistd.h>
 #include "monitor.h"
 
 int main (int argc, char **argv) {
+
+    zyre_t *node = zyre_new ("monitor");
+    assert (node);
+    char hostname[128];
+    gethostname(hostname, 128);
+    zyre_set_header (node, "HAP_SERVER", "%s", hostname);
+    zyre_set_header (node, "HAP_SERVER", "%s", hostname);
+    zyre_start (node);
+
 
     zsock_t *sub = zsock_new (ZMQ_SUB);
     assert (sub);
