@@ -12,7 +12,7 @@ PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 CFLAGS = -lczmq -lzmq
 CXXFLAGS = -lczmq -std=c++11 -lstdc++
 
-#PHONY = all, clean
+PHONY = all, clean
 
 all: $(PROGRAMS)
 
@@ -20,13 +20,13 @@ clean:
 	$(RM) -f $(PROGRAMS)
 
 $(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $^
 
 $(PROGRAM_UPS): ups/ups.c
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $^
 
 $(PROGRAM_MON): monitor/monitor.cc
-	$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 test: all
 	./$(PROGRAM_EMAIL) & PID_E=$$! && \
