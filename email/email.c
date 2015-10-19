@@ -17,9 +17,10 @@ int main(int argc, char** argv) {
     while (!zsys_interrupted) {
         char *msg, *ups, *state;
         int r = zstr_recvx(client, &ups, &msg, &state, NULL);
-        zsys_debug("ups = %s, msg = %s, state = %s\n", ups, msg, state);
         if (msg && streq(msg, "ALERT"))
             zsys_info("Got ALERT for ups '%s', state '%s', sending an email", ups, state);
+        else
+            zsys_error("UNEXPECTED: ups = %s, msg = %s, state = %s\n", ups, msg, state);
         zstr_free(&msg);
         zstr_free(&ups);
         zstr_free(&state);
