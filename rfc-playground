@@ -13,9 +13,10 @@ Protocol UPS-MONITOR:
     MONITOR:
         subscribe
         bind
+        Expected message format: multipart string <<ups_name>, <ups_status>>
         Evalute every recieved message:
             if state changed
-                send multipart string message "ALERT" "<new_state>" 
+                send multipart string message <<ups_name>, "ALERT", <new_state>> 
 
 
 Protocol EMAIL-MONITOR:
