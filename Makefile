@@ -1,4 +1,4 @@
-PROGRAM_EMAIL = email
+PROGRAM_EMAIL = email-cli
 PROGRAM_UPS = ups-cli
 PROGRAM_MON = monitor-cli
 
