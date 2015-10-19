@@ -12,7 +12,7 @@ PROGRAMS = $(PROGRAMS_C)# $(PROGRAMS_CXX)
 #SOURCES_CXX = $(addsuffix .cc,$(PROGRAMS_CXX))
 
 CFLAGS = -lczmq -lzmq
-CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++
+CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++ -I.
 
 # Addition for special cases
 CFLAGS_ZYRE = -lzyre
@@ -41,7 +41,7 @@ $(PROGRAM_UPSXX): ups/ups.cxx
 	fi
 
 $(PROGRAM_MON): monitor/monitor.cc
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -lzyre -o $@ $^
 
 testz: $(PROGRAM_ZYRE_TRIVIAL)
 	./$(PROGRAM_ZYRE_TRIVIAL)
