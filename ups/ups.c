@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
     while(!zsys_interrupted) {
         if(((random())%2) >0) {
             zstr_sendx(sc, argv[2], "ON", NULL);
-            printf("%s ON\n", argv[2]);
+            zsys_debug("UPS %s ON", argv[2]);
         } else {
             zstr_sendx(sc, argv[2], "OFF", NULL);
-            printf("%s OFF\n", argv[2]);
+            zsys_debug("UPS %s OFF", argv[2]);
         }
         sleep(1);
     }
