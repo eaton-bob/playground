@@ -49,7 +49,6 @@ int main (int argc, char **argv) {
             continue;
         }        
         else if (which == sub) {
-            zsys_debug ("sub-branch");
             char *ups_name = NULL, *state = NULL;
             rv = zstr_recvx (which, &ups_name, &state, NULL);
             assert (rv != -1);
