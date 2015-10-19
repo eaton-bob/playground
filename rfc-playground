@@ -1,34 +1,30 @@
-System consists of 3 modules: UPS, MONITOR, EMAIL.
-Possible communicaion chains:
-    UPS-MONITOR
-    MONITOR-EMAIL
+## RFC1 - Hardware Monitor Protocol
 
-Protocol UPS-MONITOR:
-    Port: 5560
-    UPS:
-        publish
-        connect
-        Information: ON/OFF
-        Message is sent every second
-    MONITOR:
-        subscribe
-        bind
-        Expected message format: multipart string <<ups_name>, <ups_status>>
-        Evalute every recieved message:
-            if state changed
-                send multipart string message <<ups_name>, "ALERT", <new_state>> 
+This connects a HARDWARE peer to a MONITOR peer.
+
+The HARDWARE peer creates a PUB socket and connects to port 5560 on the MONITOR peer system.
+The MONITOR peer creates a SUB socket, subscribes to "" (all data) and binds to port 5560 on all interfaces ("*").
+
+The protocol consists of two messages:
+
+* name/ON - the HARDWARE is in "power on" state 
+* name/OFF - the HARDWARE is on "power off" state
+
+Where "name" is a unique name for the HARDWARE node, and "/" indicates a multipart message.
+
+The HARDWARE peer SHALL send a state message at regular intervals, e.g. once per second.
 
 
-Protocol EMAIL-MONITOR:
-    Port: 5561
-    MONITOR:
-        publish
-        bind
-        Information: Alert
-        bind
-        Sends message Alert only once when alert was evaluated
-    EMAIL:
-        subscribe
-        connect
-        When message is recieved email is sent
+## RFC2 - Alert Gateway Protocol
+
+This connects a MONITOR peer to a GATEWAY peer.
+
+The MONITOR peer creates a PUB socket, subscribes to "" (all data) and connects to port 5561 on the MONITOR peer system.
+The GATEWAY peer creates a SUB socket and binds to port 5561 on all interfaces ("*").
+
+The protocol consists of one message:
+
+* name/ALERT/STATE - a specified asset has changed state. This message does not contain further information.
+
+Where "name" is a unique name for the asset, and "/" indicates a multipart message.
 
