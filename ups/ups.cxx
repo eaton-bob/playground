@@ -37,10 +37,10 @@ int main (int argc, char ** argv) {
 		socket.send(upsname.data(), upsname.size(), ZMQ_SNDMORE);
 		if(ison()) {
 			socket.send("ON", 2, 0);
-			zsys_debug("UPS %s ON", upsname.data());
+			fprintf(stderr,"UPS %s ON\n", upsname.data());
 		} else {
 			socket.send("OFF", 3, 0);
-			zsys_debug("UPS %s OFF", upsname.data());
+			fprintf(stderr,"UPS %s OFF\n", upsname.data());
 		}
 
 		// wait 1 sec
