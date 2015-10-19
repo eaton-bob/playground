@@ -12,7 +12,7 @@
 
 bool ison()
 {
-	return true;
+	return random()%2;
 }
 
 
