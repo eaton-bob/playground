@@ -26,9 +26,12 @@ $(PROGRAM_EMAIL): email/email.c
 $(PROGRAM_UPS): ups/ups.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Requires https://github.com/zeromq/cppzmq/raw/master/zmq.hpp
 $(PROGRAM_UPSXX): ups/ups.cxx
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
+	if $(CXX) $(CXXFLAGS) -o $@ $^; then : ; else RES=$$?; \
+	    echo "NOTE: ups.cxx requires zmq.hpp available at https://github.com/zeromq/cppzmq/raw/master/zmq.hpp" >&2; \
+	    exit $$RES; \
+	fi
 
 $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
