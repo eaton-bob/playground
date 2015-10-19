@@ -39,10 +39,10 @@ int main (int argc, char **argv) {
         zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
         uint64_t timestamp = zclock_mono ();
 
-        if (!which && zpoller_expired (poller)) {
+        if (zpoller_expired (poller)) {
             std::vector<std::string> to_delete;
             for (const auto& item : upses) {
-                if (item.second.second + 1000 > timestamp) {
+                if (item.second.second + 1000 < timestamp) {
                     zstr_sendx (pub, item.first.c_str (), "ALERT", "GONE", NULL);
                     zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", item.first.c_str (), "GONE");
                     to_delete.push_back (item.first);
