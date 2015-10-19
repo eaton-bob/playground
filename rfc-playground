@@ -13,7 +13,10 @@ Protocol UPS-MONITOR:
     MONITOR:
         subscribe
         bind
-        Evalute every recieved message
+        Evalute every recieved message:
+            if state changed
+                send multipart string message "ALERT" "<new_state>" 
+
 
 Protocol EMAIL-MONITOR:
     Port: 5561
