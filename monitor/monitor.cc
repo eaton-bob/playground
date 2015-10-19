@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "monitor.h"
+//#include "monitor.h"
 
 /* \file    monitor.cc
    \details listens on :5560 for events from counteragents like UPS and
@@ -33,7 +33,7 @@ int main (int argc, char **argv) {
     // key: ups name value: state, timestamp
     std::map<std::string, std::pair<int, uint64_t>> upses;
 
-    std::cout << text << std::endl;     
+//    std::cout << text << std::endl;     
 
     while (!zsys_interrupted) {
         zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
