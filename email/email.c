@@ -1,5 +1,7 @@
 #include <czmq.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /* !\file    email.c
    \details  Listens on :5561 to receive alerts from counterparts like monitor
@@ -7,7 +9,13 @@
 */
 
 int main(int argc, char** argv) {
-    zsock_t *client = zsock_new_sub("tcp://*:5561", "");
+    char *endpoint = "tcp://*:5561";
+    if (argc <= 1)
+        zsys_info("You can use email-cli tcp://ip-address:5561\n");
+    else
+        endpoint = argv[1];
+
+    zsock_t *client = zsock_new_sub(endpoint, "");
     assert (client);
 
     char *msg, *ups, *state;
