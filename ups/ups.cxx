@@ -5,6 +5,7 @@
 //
 #include <zmq.hpp>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <unistd.h>
 
@@ -14,7 +15,17 @@ bool ison()
 	return true;
 }
 
-int main () {
+
+int main (int argc, char ** argv) {
+
+	if(argc<2)
+	{
+		std::cout << "Usage: " << argv[0] << " <upsname>" << std::endl;
+		return -1;
+	}
+	
+	std::string upsname = argv[1];
+	
     //  Prepare our context and socket
     zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_PUB);
@@ -23,19 +34,11 @@ int main () {
     while (1) {
 
         //  Publish status
-		
+		socket.send(upsname.data(), upsname.size(), ZMQ_SNDMORE);
 		if(ison())
-		{
-			zmq::message_t pub (2);
-			memcpy ((void *) pub.data (), "ON", 2);
-			socket.send (pub);
-		}
+			socket.send("ON", 2, 0);
 		else
-		{
-			zmq::message_t pub (3);
-			memcpy ((void *) pub.data (), "OFF", 3);
-			socket.send (pub);
-		}
+			socket.send("OFF", 3, 0);
 		
 		// wait 1 sec
 		sleep(1);
