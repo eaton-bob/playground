@@ -1,47 +1,30 @@
-PROGRAM_EMAIL = email-cli
-PROGRAM_UPS = ups-cli
-PROGRAM_UPSXX = ups-cli++
-PROGRAM_MON = monitor-cli
-PROGRAM_ZYRE_TRIVIAL = zyre-trivial
-
-PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL)
-PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
-PROGRAMS = $(PROGRAMS_C)# $(PROGRAMS_CXX)
-
-#SOURCES_C = $(addsuffix .c,$(PROGRAMS_C))
-#SOURCES_CXX = $(addsuffix .cc,$(PROGRAMS_CXX))
-
-CFLAGS = -lczmq -lzmq
-CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++ -I.
-
-# Addition for special cases
-CFLAGS_ZYRE = -lzyre
-
 PHONY = all, clean
+
+PROGRAMS=email-cli ups-cli ups-clixx monitor-cli  zyre-trivial
 
 all: $(PROGRAMS)
 
 clean:
-	$(RM) -f $(PROGRAMS)
+	$(RM) -f $(PROGRAMS) ups-clixx
 
-$(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -lzyre -o $@ $^
+email-cli: email/email.c
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(PROGRAM_UPS): ups/ups.c
-	$(CC) $(CFLAGS) -lzyre -o $@ $^
+ups-cli: ups/ups.c
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
-	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
+zyre-trivial: zyre-trivial-src/zyre-trivial.c
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(PROGRAM_UPSXX): ups/ups.cxx
+ups-clixx: ups/ups.cxx
 	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
 	if $(CXX) $(CXXFLAGS) -o $@ $^; then : ; else RES=$$?; \
 	    echo "NOTE: ups.cxx requires zmq.hpp available at https://github.com/zeromq/cppzmq/raw/master/zmq.hpp" >&2; \
 	    exit $$RES; \
 	fi
 
-$(PROGRAM_MON): monitor/monitor.cc
-	$(CXX) $(CXXFLAGS) -lzyre -o $@ $^
+monitor-cli: monitor/monitor.cc
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 testz: $(PROGRAM_ZYRE_TRIVIAL)
 	./$(PROGRAM_ZYRE_TRIVIAL)
