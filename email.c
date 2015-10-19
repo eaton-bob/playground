@@ -10,5 +10,5 @@ int main() {
         zsys_info("Got ALERT, sending an email");
     free(msg);
 
-    zsock_destroy(&server);
+    zsock_destroy(&client);
 }
