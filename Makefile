@@ -28,7 +28,7 @@ $(PROGRAM_EMAIL): email/email.c
 	$(CC) $(CFLAGS) -lzyre -o $@ $^
 
 $(PROGRAM_UPS): ups/ups.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -lzyre -o $@ $^
 
 $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
 	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
