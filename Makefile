@@ -2,8 +2,9 @@ PROGRAM_EMAIL = email-cli
 PROGRAM_UPS = ups-cli
 PROGRAM_UPSXX = ups-cli++
 PROGRAM_MON = monitor-cli
+PROGRAM_ZYRE_TRIVIAL = zyre-trivial
 
-PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS)
+PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL)
 PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
 PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
@@ -12,6 +13,9 @@ PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
 CFLAGS = -lczmq -lzmq
 CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++
+
+# Addition for special cases
+CFLAGS_ZYRE = -lzyre
 
 PHONY = all, clean
 
@@ -26,6 +30,9 @@ $(PROGRAM_EMAIL): email/email.c
 $(PROGRAM_UPS): ups/ups.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+$(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
+	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
+
 $(PROGRAM_UPSXX): ups/ups.cxx
 	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
 	if $(CXX) $(CXXFLAGS) -o $@ $^; then : ; else RES=$$?; \
@@ -35,6 +42,9 @@ $(PROGRAM_UPSXX): ups/ups.cxx
 
 $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
+testz: $(PROGRAM_ZYRE_TRIVIAL)
+	./$(PROGRAM_ZYRE_TRIVIAL)
 
 test: all
 	./$(PROGRAM_EMAIL) & PID_E=$$! && \
