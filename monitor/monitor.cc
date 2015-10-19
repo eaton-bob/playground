@@ -14,7 +14,7 @@ int main (int argc, char **argv) {
     rv = zsock_bind (pub, "tcp://*:5561");
     assert (rv != -1);
 
-    //  Set-up poller (oroginally we had rep.. too lazy to remove)
+    // Set-up poller (originally we had rep... too lazy to remove)
     zpoller_t *poller = zpoller_new (sub, NULL);
     assert (poller);
 
