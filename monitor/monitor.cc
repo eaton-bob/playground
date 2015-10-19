@@ -41,12 +41,12 @@ int main (int argc, char **argv) {
                 // insert
                 zsys_debug ("adding ups_name '%s'", ups_name);
                 upses.emplace (std::make_pair (ups_name, streq (state, "ON") ? 1 : 0));
-                zstr_sendx (pub, ups_name, state, NULL);
+                zstr_sendx (pub, ups_name, "ALERT", state, NULL);
                 zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
             else if (!streq (state, needle->second == 1 ? "ON" : "OFF")) {
                 needle->second = (streq (state, "ON") ? 1 : 0);
-                zstr_sendx (pub, ups_name, state, NULL);
+                zstr_sendx (pub, ups_name, "ALERT", state, NULL);
                 zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
 
