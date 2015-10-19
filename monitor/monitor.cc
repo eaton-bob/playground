@@ -1,21 +1,17 @@
 #include <czmq.h>
 
 int main (int argc, char **argv) {
-    if (argc != 3) {
-        zsys_error ("alers <SUB socket> <PUB socket>");
-        return EXIT_FAILURE;
-    }
 
     zsock_t *sub = zsock_new (ZMQ_SUB);
     assert (sub);
 
-    int rv = zsock_bind  (sub, argv[1]);
+    int rv = zsock_bind  (sub, "tcp://*:5560");
     assert (rv != -1);
     zsock_set_subscribe (sub, "");
 
     zsock_t *pub = zsock_new (ZMQ_PUB);
     assert (pub); 
-    rv = zsock_bind (pub, argv[2]);
+    rv = zsock_bind (pub, "tcp://*:5561");
     assert (rv != -1);
 
     //  Set-up poller (oroginally we had rep.. too lazy to remove)
@@ -33,7 +29,7 @@ int main (int argc, char **argv) {
 
         if (which == sub) {
             char *str = zstr_recv (which);
-            zsys_debug ("RECV (%s): %s", argv[1], str);
+            zsys_debug ("RECV (sub): %s", str);
             if (streq (str, "ON") && state == 0) {
                 state = 1;
                 zstr_sendx (pub, "ALERT", "ON", NULL);
