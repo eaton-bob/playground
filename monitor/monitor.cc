@@ -6,11 +6,17 @@ int main (int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    zsock_t *sub = zsock_new_sub (argv[1], "");
+    zsock_t *sub = zsock_new (ZMQ_SUB);
     assert (sub);
 
-    zsock_t *pub = zsock_new_rep (argv[2]);
+    int rv = zsock_bind  (sub, argv[1]);
+    assert (rv != -1);
+    zsock_set_subscribe (sub, "");
+
+    zsock_t *pub = zsock_new (ZMQ_PUB);
     assert (pub); 
+    rv = zsock_bind (pub, argv[2]);
+    assert (rv != -1);
 
     //  Set-up poller (oroginally we had rep.. too lazy to remove)
     zpoller_t *poller = zpoller_new (sub, NULL);
