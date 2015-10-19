@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
     zsock_set_subscribe (sub, "");
 
     zsock_t *pub = zsock_new (ZMQ_PUB);
-    assert (pub); 
+    assert (pub);
     rv = zsock_bind (pub, "tcp://*:5561");
     assert (rv != -1);
 
