@@ -1,8 +1,10 @@
 #include <czmq.h>
 
 int main (int argc, char **argv) {
-    if (argc != 3)
+    if (argc != 3) {
         zsys_error ("alers <SUB socket> <PUB socket>");
+        return EXIT_FAILURE;
+    }
 
     zsock_t *sub = zsock_new_sub (argv[1], "");
     assert (sub);
