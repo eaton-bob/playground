@@ -1,3 +1,7 @@
+/* !\file   zyre-trivial.c
+   \details Example program that finds others like it on a LAN and chats to them
+ */
+
 #include <zyre.h>
 
 int main(int argc, char**argv) {
