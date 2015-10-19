@@ -1,9 +1,11 @@
 #include <czmq.h>
+#include <zyre.h>
 #include <string>
 #include <map>
 #include <utility>
 #include <iostream>
 #include <vector>
+#include "monitor.h"
 
 //#include "monitor.h"
 
@@ -13,6 +15,15 @@
  */
 
 int main (int argc, char **argv) {
+    if (argc < 2)
+        return EXIT_FAILURE;
+
+    zyre_t *node = zyre_new ("monitor");
+    assert (node);
+    zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append(":5560").c_str ());
+    zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append(":5561").c_str ());
+    zyre_start (node);
+
 
     zsock_t *sub = zsock_new (ZMQ_SUB);
     assert (sub);
@@ -22,7 +33,7 @@ int main (int argc, char **argv) {
     zsock_set_subscribe (sub, "");
 
     zsock_t *pub = zsock_new (ZMQ_PUB);
-    assert (pub); 
+    assert (pub);
     rv = zsock_bind (pub, "tcp://*:5561");
     assert (rv != -1);
 
@@ -33,7 +44,7 @@ int main (int argc, char **argv) {
     // key: ups name value: state, timestamp
     std::map<std::string, std::pair<int, uint64_t>> upses;
 
-//    std::cout << text << std::endl;     
+    std::cout << text << std::endl;     
 
     while (!zsys_interrupted) {
         zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);

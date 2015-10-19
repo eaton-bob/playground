@@ -1,4 +1,5 @@
 #include <czmq.h>
+#include <zyre.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,12 +9,42 @@
              and forwards them to email; see rfc in top dir
 */
 
+static char*
+s_find_the_endpoint(void) {
+
+    zyre_t *node = zyre_new("email");
+    assert (node);
+
+    zyre_set_verbose (node);
+    zyre_start (node);
+    zyre_join (node, "BIOS");
+
+    char *endpoint = NULL;
+
+    while (!zsys_interrupted || !endpoint) {
+        zyre_event_t *event = zyre_event_new (node);
+        if (!event)
+            break;
+
+        const char* ip_recv = zyre_event_header (event, "GAP_SERVER");
+        if (ip_recv) {
+            endpoint = strdup(ip_recv);
+        }
+        //zstr_free(&ip_recv);
+        zyre_event_print (event);
+        zyre_event_destroy (&event);
+    }
+
+    zyre_stop (node);
+    zyre_destroy (&node);
+}
+
 int main(int argc, char** argv) {
-    char *endpoint = "tcp://*:5561";
-    if (argc <= 1)
-        zsys_info("You can use email-cli tcp://ip-address:5561\n");
-    else
-        endpoint = argv[1];
+
+    zsys_info("Getting the endpoint ...");
+    char *endpoint = s_find_the_endpoint();
+    assert (endpoint);
+    zsys_info("Got %s ...", endpoint);
 
     zsock_t *client = zsock_new_sub(endpoint, "");
     assert (client);
@@ -30,5 +61,6 @@ int main(int argc, char** argv) {
         zstr_free(&state);
     }
 
+    zstr_free(&endpoint);
     zsock_destroy(&client);
 }
