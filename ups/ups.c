@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
     zsock_t * sc = zsock_new(ZMQ_PUB);
     zsock_connect(sc, "tcp://%s:5560", argv[1]);
-    bool state = 0;
+    bool state = random()%2;
     int timeout = 0;
     while(!zsys_interrupted) {
         if(timeout == 0) {

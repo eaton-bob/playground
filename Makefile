@@ -33,9 +33,12 @@ $(PROGRAM_UPS): ups/ups.c
 $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
 	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
 
-# Requires https://github.com/zeromq/cppzmq/raw/master/zmq.hpp
 $(PROGRAM_UPSXX): ups/ups.cxx
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
+	if $(CXX) $(CXXFLAGS) -o $@ $^; then : ; else RES=$$?; \
+	    echo "NOTE: ups.cxx requires zmq.hpp available at https://github.com/zeromq/cppzmq/raw/master/zmq.hpp" >&2; \
+	    exit $$RES; \
+	fi
 
 $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
