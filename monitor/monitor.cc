@@ -1,5 +1,10 @@
 #include <czmq.h>
 
+/* \file    monitor.cc
+   \details listens on :5560 for events from counteragents like UPS and
+            selectively pushes alerts to :5561; see rfc in top dir
+ */
+
 int main (int argc, char **argv) {
 
     zsock_t *sub = zsock_new (ZMQ_SUB);
