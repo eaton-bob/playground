@@ -17,9 +17,9 @@ CXXFLAGS = -lczmq -std=c++11 -lstdc++
 all: $(PROGRAMS)
 
 clean:
-	$(RM) -f email ups-cli monitor-cli
+	$(RM) -f $(PROGRAMS)
 
-$(PROGRAM_EMAIL): email.c
+$(PROGRAM_EMAIL): email/email.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 $(PROGRAM_UPS): ups/ups.c
