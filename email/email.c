@@ -3,8 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(int argc, char** argv) {
+/* !\file    email.c
+   \details  Listens on :5561 to receive alerts from counterparts like monitor
+             and forwards them to email; see rfc in top dir
+*/
 
+int main(int argc, char** argv) {
     char *endpoint = "tcp://*:5561";
     if (argc <= 1)
         zsys_info("You can use email-cli tcp://ip-address:5561\n");
