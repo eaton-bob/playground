@@ -2,6 +2,10 @@
 #include <string>
 #include <map>
 #include <utility>
+#include <iostream>
+#include <vector>
+
+#include "monitor.h"
 
 int main (int argc, char **argv) {
 
@@ -21,31 +25,45 @@ int main (int argc, char **argv) {
     zpoller_t *poller = zpoller_new (sub, NULL);
     assert (poller);
 
-    std::map<std::string, int> upses;
+    // key: ups name value: state, timestamp
+    std::map<std::string, std::pair<int, uint64_t>> upses;
+
+    std::cout << text << std::endl;     
 
     while (!zsys_interrupted) {
-        zsock_t *which = (zsock_t *) zpoller_wait (poller, -1);
-        if (!which) {
-            zsys_error ("The zpoller_wait () call was interrupted (SIGINT), or the ZMQ context was destroyed");
-            break;
-        }
+        zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
+        uint64_t timestamp = zclock_mono ();
 
-        if (which == sub) {
+        if (!which && zpoller_expired (poller)) {
+            std::vector<std::string> to_delete;
+            for (const auto& item : upses) {
+                if (item.second.second + 1000 > timestamp) {
+                    zstr_sendx (pub, item.first.c_str (), "ALERT", "GONE", NULL);
+                    zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", item.first.c_str (), "GONE");
+                    to_delete.push_back (item.first);
+                }
+            }
+            for (const auto& item : to_delete) {
+                upses.erase (item);
+            }
+            continue;
+        }        
+        else if (which == sub) {
+            zsys_debug ("sub-branch");
             char *ups_name = NULL, *state = NULL;
             rv = zstr_recvx (which, &ups_name, &state, NULL);
             assert (rv != -1);
-            zsys_debug ("RECV ups_name: '%s'\tstate: '%s'", ups_name, state);
-
+            
             auto needle = upses.find (ups_name);
             if (needle == upses.end ()) {
                 // insert
                 zsys_debug ("adding ups_name '%s'", ups_name);
-                upses.emplace (std::make_pair (ups_name, streq (state, "ON") ? 1 : 0));
+                upses.emplace (std::make_pair (ups_name, std::make_pair (streq (state, "ON") ? 1 : 0, timestamp)));
                 zstr_sendx (pub, ups_name, "ALERT", state, NULL);
                 zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
-            else if (!streq (state, needle->second == 1 ? "ON" : "OFF")) {
-                needle->second = (streq (state, "ON") ? 1 : 0);
+            else if (!streq (state, needle->second.first == 1 ? "ON" : "OFF")) {                
+                needle->second = std::make_pair(streq (state, "ON") ? 1 : 0, timestamp);
                 zstr_sendx (pub, ups_name, "ALERT", state, NULL);
                 zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
