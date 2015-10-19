@@ -25,7 +25,7 @@ clean:
 	$(RM) -f $(PROGRAMS)
 
 $(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -lzyre -o $@ $^
 
 $(PROGRAM_UPS): ups/ups.c
 	$(CC) $(CFLAGS) -o $@ $^
