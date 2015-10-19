@@ -1,3 +1,32 @@
+## RFC1 - Hardware Monitor Protocol
+
+This connects a HARDWARE peer to a MONITOR peer.
+
+The HARDWARE peer creates a PUB socket and connects to port 5560 on the MONITOR peer system.
+The MONITOR peer creates a SUB socket, subscribes to "" (all data) and binds to port 5560 on all interfaces ("*").
+
+The protocol consists of two messages:
+
+* ON - the HARDWARE is in "power on" state 
+* OFF - the HARDWARE is on "power off" state
+
+The HARDWARE peer SHALL send a state message at regular intervals, e.g. once per second.
+
+
+## RFC2 - Alert Gateway Protocol
+
+This connects a MONITOR peer to a GATEWAY peer.
+
+The MONITOR peer creates a PUB socket, subscribes to "" (all data) and connects to port 5561 on the MONITOR peer system.
+The GATEWAY peer creates a SUB socket and binds to port 5561 on all interfaces ("*").
+
+The protocol consists of one message:
+
+* ALERT - the HARDWARE has changed state. This message does not contain further information.
+
+^^^ this is the style I suggest. Don't describe implementations except as relevant for other peers.
+
+
 System consists of 3 modules: UPS, MONITOR, EMAIL.
 Possible communicaion chains:
     UPS-MONITOR
