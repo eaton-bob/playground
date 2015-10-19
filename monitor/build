@@ -1,0 +1,2 @@
+rm -f monitor
+gcc -std=c++11 -lstdc++ -lczmq monitor.cc -o monitor
