@@ -6,13 +6,13 @@ PROGRAM_ZYRE_TRIVIAL = zyre-trivial
 
 PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL)
 PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
-PROGRAMS = $(PROGRAMS_C)# $(PROGRAMS_CXX)
+PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
 #SOURCES_C = $(addsuffix .c,$(PROGRAMS_C))
 #SOURCES_CXX = $(addsuffix .cc,$(PROGRAMS_CXX))
 
 CFLAGS = -lczmq -lzmq
-CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++ -I.
+CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++ -I./ -Icppzmq/
 
 # Addition for special cases
 CFLAGS_ZYRE = -lzyre
@@ -36,7 +36,10 @@ $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
 $(PROGRAM_UPSXX): ups/ups.cxx
 	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
 	if $(CXX) $(CXXFLAGS) -o $@ $^; then : ; else RES=$$?; \
+	    echo "=============================================================================" >&2; \
 	    echo "NOTE: ups.cxx requires zmq.hpp available at https://github.com/zeromq/cppzmq/raw/master/zmq.hpp" >&2; \
+	    echo "Just do 'git checkout --recurse' to get a local copy" >&2; \
+	    echo "=============================================================================" >&2; \
 	    exit $$RES; \
 	fi
 
