@@ -1,16 +1,35 @@
+PROGRAM_EMAIL = email
+PROGRAM_UPS = ups-cli
+PROGRAM_MON = monitor-cli
 
-PHONY = all, clean
+PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS)
+PROGRAMS_CXX = $(PROGRAM_MON)
+PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
-all: email-cli ups-cli monitor-cli
+#SOURCES_C = $(addsuffix .c,$(PROGRAMS_C))
+#SOURCES_CXX = $(addsuffix .cc,$(PROGRAMS_CXX))
+
+CFLAGS = -lczmq -lzmq
+CXXFLAGS = -lczmq -std=c++11 -lstdc++
+
+#PHONY = all, clean
+
+all: $(PROGRAMS)
 
 clean:
-	rm email-cli ups-cli monitor-cli
+	$(RM) -f $(PROGRAMS)
 
-email-cli: email/email.c
-	gcc -lczmq -lzmq email/email.c -o email-cli
+$(PROGRAM_EMAIL): email/email.c
+	$(CC) $(CFLAGS) -o $@ $<
 
-ups-cli: ups/ups.c
-	gcc -lczmq -lzmq ups/ups.c -o ups-cli
+$(PROGRAM_UPS): ups/ups.c
+	$(CC) $(CFLAGS) -o $@ $<
 
-monitor-cli: monitor/monitor.cc
-	gcc -lczmq -lzmq monitor/monitor.cc -o monitor-cli
+$(PROGRAM_MON): monitor/monitor.cc
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+test: all
+	./$(PROGRAM_EMAIL) & PID_E=$$! && \
+	./$(PROGRAM_UPS) & PID_U=$$! && \
+	./$(PROGRAM_MON) & PID_M=$$! && \
+	kill $$PID_E $$PID_U $$PID_M
