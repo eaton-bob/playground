@@ -1,0 +1,30 @@
+System consists of 3 modules: UPS, MONITOR, EMAIL.
+Possible communicaion chains:
+    UPS-MONITOR
+    MONITOR-EMAIL
+
+Protocol UPS-MONITOR:
+    Port: 5560
+    UPS:
+        publish
+        connect
+        Information: ON/OFF
+        Message is sent every second
+    MONITOR:
+        subscribe
+        bind
+        Evalute every recieved message
+
+Protocol EMAIL-MONITOR:
+    Port: 5561
+    MONITOR:
+        publish
+        bind
+        Information: Alert
+        bind
+        Sends message Alert only once when alert was evaluated
+    EMAIL:
+        subscribe
+        connect
+        When message is recieved email is sent
+
