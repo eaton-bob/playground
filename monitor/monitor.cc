@@ -1,4 +1,7 @@
 #include <czmq.h>
+#include <string>
+#include <map>
+#include <utility>
 
 /* \file    monitor.cc
    \details listens on :5560 for events from counteragents like UPS and
@@ -23,7 +26,7 @@ int main (int argc, char **argv) {
     zpoller_t *poller = zpoller_new (sub, NULL);
     assert (poller);
 
-    int state = 0; // 0 - off, 1 - on
+    std::map<std::string, int> upses;
 
     while (!zsys_interrupted) {
         zsock_t *which = (zsock_t *) zpoller_wait (poller, -1);
@@ -33,19 +36,27 @@ int main (int argc, char **argv) {
         }
 
         if (which == sub) {
-            char *str = zstr_recv (which);
-            zsys_debug ("RECV (sub): %s", str);
-            if (streq (str, "ON") && state == 0) {
-                state = 1;
-                zstr_sendx (pub, "ALERT", "ON", NULL);
-                zsys_debug ("PUBLISH");
+            char *ups_name = NULL, *state = NULL;
+            rv = zstr_recvx (which, &ups_name, &state, NULL);
+            assert (rv != -1);
+            zsys_debug ("RECV ups_name: '%s'\tstate: '%s'", ups_name, state);
+
+            auto needle = upses.find (ups_name);
+            if (needle == upses.end ()) {
+                // insert
+                zsys_debug ("adding ups_name '%s'", ups_name);
+                upses.emplace (std::make_pair (ups_name, streq (state, "ON") ? 1 : 0));
+                zstr_sendx (pub, ups_name, state, NULL);
+                zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
-            else if (streq (str, "OFF") && state == 1) {
-                state = 0;
-                zstr_sendx (pub, "ALERT", "OFF", NULL);
-                zsys_debug ("PUBLISH");
+            else if (!streq (state, needle->second == 1 ? "ON" : "OFF")) {
+                needle->second = (streq (state, "ON") ? 1 : 0);
+                zstr_sendx (pub, ups_name, state, NULL);
+                zsys_debug ("PUBLISH: ups_name: '%s'\tstate: '%s'", ups_name, state);
             }
-            zstr_free (&str);
+
+            zstr_free (&ups_name);
+            zstr_free (&state);
         }
     }
     zsock_destroy (&sub);
