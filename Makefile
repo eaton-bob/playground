@@ -1,13 +1,13 @@
 
 PHONY = all, clean
 
-all: email ups-cli monitor-cli
+all: email-cli ups-cli monitor-cli
 
 clean:
-	rm email ups-cli monitor-cli
+	rm email-cli ups-cli monitor-cli
 
-email: email.c
-	gcc -lczmq -lzmq email.c -o email
+email-cli: email/email.c
+	gcc -lczmq -lzmq email/email.c -o email-cli
 
 ups-cli: ups/ups.c
 	gcc -lczmq -lzmq ups/ups.c -o ups-cli
