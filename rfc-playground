@@ -24,7 +24,7 @@ The GATEWAY peer creates a SUB socket and binds to port 5561 on all interfaces (
 
 The protocol consists of one message:
 
-* name/ALERT - a specified asset has changed state. This message does not contain further information.
+* name/ALERT/STATE - a specified asset has changed state. This message does not contain further information.
 
 Where "name" is a unique name for the asset, and "/" indicates a multipart message.
 
