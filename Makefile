@@ -20,6 +20,9 @@ RM = rm -f
 CFLAGS = -lczmq -lzmq -lzyre
 CXXFLAGS = -lczmq -lzmq -lzyre -std=c++11 -lstdc++ -I./ -Icppzmq/
 
+# Special linking for some (not all) programs
+CFLAGS_MLM = -lmlm
+
 PHONY = all, clean
 
 all: check-zmq-hpp-presence $(PROGRAMS)
@@ -43,13 +46,13 @@ $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(PROGRAM_MLM): mlm.c
-	$(CC) $(CFLAGS) -lmlm -o $@ $^
+	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
 
 $(PROGRAM_MLM_TEST): temp/test.c
-	$(CC) $(CFLAGS) -lmlm -o $@ $^
+	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
 
 $(PROGRAM_MALAMUTEZ): malamutez/malamute.c
-	$(CC) $(CFLAGS) -lmlm -o $@ $^
+	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
 
 check-zmq-hpp-presence:
 	@if (echo '#define __ZMQ_HPP_INCLUDED__'; echo '#include <zmq.hpp>' ) | gcc -E $(CXXFLAGS) -x 'c++' - > /dev/null ; then : ; else RES=$$?; \
