@@ -8,9 +8,7 @@ s_broker(char *endpoint)
     //1. start malamute
     zactor_t *broker = zactor_new (mlm_server, NULL);
     assert (broker);
-    zsys_info ("################################################################################");
     zsys_info ("malamute->bind(\"%s\")", endpoint);
-    zsys_info ("################################################################################");
     zsock_send (broker, "ss", "BIND", endpoint);
     zstr_send (broker, "VERBOSE");
     return broker;
@@ -79,7 +77,7 @@ int main() {
                 zsys_debug ("UUID: %s, sender: %s, strcmp: %d",
                         UUID,
                         zyre_event_sender (event),
-                        strcmp (UUID, zyre_event_sender (event))
+                        r
                         );
 
                 to_shout = false;
