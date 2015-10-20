@@ -29,3 +29,21 @@ The protocol consists of one message:
 Where "name" is a unique name for the asset, and "/" indicates a multipart message. STATE values "ON", "OFF", "GONE".
 
 The MONITOR peer MUST send a state (HE/ART/BEET) message at reguar intervals, e.g. once per second otherwise it's considered gone.
+
+
+## RFC3 - Zyre Leader Election Protocol
+
+This protocol establishes which node in a Zyre cluster is leader. In this case the leader hosts a Malamute server. However the protocol does not depend on that, and can work without Malamute.
+
+* Each node SHALL have two states, LEADER and FOLLOWER.
+* Each node SHALL join the MALAMUTE group.
+* When a node becomes LEADER, it SHALL create a Malamute server.
+* When a node becomes FOLLOWER, it SHALL create a Malamute client and connect to the LEADER endpoint. It SHALL also store the LEADER UUID.
+* When a node is LEADER, it SHALL shout to the MALAMUTE group every second, sending its Malamute endpoint as message payload.
+* All nodes SHALL listen to the MALAMUTE group and read all events on it.
+* Nodes SHALL ignore all events from nodes with lower UUIDs.
+* When a LEADER node receives an event (from another node with a higher UUID) it SHALL destroy its Malamute instance and become FOLLOWER.
+* When a FOLLOWER node receives an event it SHALL consider this node to be the new LEADER, if the sender's UUID is higher than the previous LEADER's UUID.
+* When a FOLLOWER receives no events within a timeframe of 3-5 seconds, it SHALL become LEADER.
+
+
