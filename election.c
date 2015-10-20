@@ -1,7 +1,8 @@
 #include <malamute.h>
 #include <zyre.h>
 
-#define TIMEOUT 5000
+#define TIMEOUT_LEADER 3000
+#define TIMEOUT_NOTLEADER 5000
 
 int main(int argc, char** argv) {
     if(argc != 3) {
@@ -27,9 +28,10 @@ int main(int argc, char** argv) {
     bool isLeader = true;
     time_t leaderLastSeen = time(NULL);
     zpoller_t *poller = zpoller_new(zyre_socket (node), NULL);
+    int timeout = TIMEOUT_LEADER;
     while (!zsys_interrupted)
     {
-        zsock_t *which = zpoller_wait(poller, TIMEOUT);
+        zsock_t *which = zpoller_wait(poller, timeout);
         if (which == NULL)
         {
             // time is out, no information from the leader
@@ -41,6 +43,7 @@ int main(int argc, char** argv) {
                 // become leader first
                 zsys_info ("LEADER IS OUT");
                 isLeader = true;
+                timeout = TIMEOUT_LEADER;
                 free(leader_uuid);
                 leader_uuid = strdup(zyre_uuid(node));
                 free(leader_endpoint);
@@ -50,6 +53,7 @@ int main(int argc, char** argv) {
             }
             // and then shout
             zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
+            continue;
         }
         zyre_event_t *event = zyre_event_new (node);
         const char *sender_uuid = zyre_event_sender (event);
@@ -75,6 +79,7 @@ int main(int argc, char** argv) {
                 char *str = zmsg_popstr(msg);
                 free(leader_endpoint);
                 leader_endpoint = strdup(str);
+                timeout = TIMEOUT_NOTLEADER;
                 // get new one leaders uuid
                 free (leader_uuid);
                 char *leader_uuid = strdup(sender_uuid);
@@ -114,6 +119,7 @@ int main(int argc, char** argv) {
                     // become leader first
                     zsys_info ("LEADER IS OUT");
                     isLeader = true;
+                    timeout = TIMEOUT_LEADER;
                     free(leader_uuid);
                     leader_uuid = strdup(zyre_uuid(node));
                     free(leader_endpoint);
