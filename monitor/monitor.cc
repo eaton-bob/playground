@@ -22,7 +22,7 @@ void shout (zyre_t *node, const char *ip_addr) {
     zmsg_t *zyre_msg = zmsg_new ();
     zmsg_addstr (zyre_msg, std::string("tcp://").append (ip_addr).append(":5560").c_str ());
     zmsg_addstr (zyre_msg, std::string("tcp://").append (ip_addr).append(":5561").c_str ());
-    zyre_shout (node, "MALAMUTE", &zyre_msg);
+    zyre_shout (node, "MONITORS", &zyre_msg);
     zmsg_destroy (&zyre_msg);
 }
 
