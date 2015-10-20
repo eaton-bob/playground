@@ -66,9 +66,9 @@ int main (int argc, char** argv)
             zsys_info ("Connection lost, getting the endpoint ...");
             char *endpoint = s_find_the_endpoint();
             assert (endpoint);
-            zsys_info("Got %s ...", endpoint);
+            zsys_info ("Got %s ...", endpoint);
 
-            zsock_destroy(&client);
+            zsock_destroy (&client);
 
             client = zsock_new_sub (endpoint, "");
             assert (client);
