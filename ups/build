@@ -1,0 +1,2 @@
+rm -f ups-cli
+gcc -std=c11 -lczmq -lzyre -lzmq ups.c -o ups-cli
