@@ -22,20 +22,17 @@ int main() {
     char *leader_uuid = strdup(zyre_uuid(node));
     zsys_info("my uuid is %s", leader_uuid);
 
-//    mlm_client_t *client = NULL;
+    bool isLeader = true;
     while (!zsys_interrupted)
     {
         zyre_event_t *event = zyre_event_new (node);
-        // Returns event type, which is a zyre_event_type_t
         const char *sender_uuid = zyre_event_sender (event);
         if (zyre_event_type (event) == ZYRE_EVENT_SHOUT)
         {
-            zsys_info ("GOT SHOUT");
-            // Return the sending peer's id as a string
             // highest string becomes a leader            .
             zsys_info ("my_leader_uui %s", leader_uuid);
             zsys_info ("my_sender_uui %s", sender_uuid);
-            if (strcmp (leader_uuid, sender_uuid) < 0 )
+            if (strcmp (sender_uuid, leader_uuid) > 0 )
             {
                 // We have a new leader
                 zsys_info ("WINS %s", sender_uuid);
@@ -48,7 +45,9 @@ int main() {
                 free (leader_uuid);
                 char *leader_uuid = strdup(sender_uuid);
                 // stop own malamute
-                zsys_info("MY_MLM_SERVER_STOP");
+                if (isLeader)
+                    zsys_info("MY_MLM_SERVER_STOP");
+                isLeader = false;
                 // stop old client
                 zsys_info("MY_MLM_CLIENT_STOP"); //mlm_client_destroy (&client);
                 // create new client to malamute of the leader
@@ -58,7 +57,7 @@ int main() {
             }
             else
             {
-                if ( strcmp (leader_uuid, zyre_uuid(node))==0)
+                if (isLeader)
                 {
                     // I am still the leader
                     zyre_shouts (node, CHANNEL, leader_endpoint);
@@ -76,6 +75,7 @@ int main() {
             // DO EXIT
             if ( strcmp (leader_uuid, sender_uuid)==0)
             {
+                isLeader = true;
                 zsys_info ("LEADER IS OUT");
                 free(leader_uuid);
                 leader_uuid = strdup(zyre_uuid(node));
@@ -88,8 +88,7 @@ int main() {
         }
         else
         {
-            zsys_info ("GOT NOT SHOUT");
-            if ( strcmp (leader_uuid, zyre_uuid(node))==0)
+            if (isLeader)
             {
                 zyre_shouts (node, CHANNEL, leader_endpoint);
                 zsys_info ("GOT NOT SHOUT:  I am still a leader -> shout");
@@ -102,7 +101,6 @@ int main() {
         zyre_event_destroy (&event);
     }
 
- //   mlm_client_destroy (&client);
     zyre_stop (node);
     zyre_destroy (&node);
     zactor_destroy (&broker);
