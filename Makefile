@@ -32,7 +32,7 @@ $(PROGRAM_UPS): ups/ups.c
 $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(PROGRAM_UPSXX): ups/ups.cxx
+$(PROGRAM_UPSXX): ups/ups.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(PROGRAM_MON): monitor/monitor.cc
