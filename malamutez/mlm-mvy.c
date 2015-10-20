@@ -51,7 +51,7 @@ int main() {
             zstr_free (&UUID);
             UUID = strdup (zyre_uuid (node));
             zstr_free (&endpoint);
-            endpoint = strdup ("tcp://192.168.1.105:9999");
+            endpoint = strdup (getenv("ENDPOINT"));
             zactor_destroy (&broker);
             broker = s_broker (endpoint);
         }
