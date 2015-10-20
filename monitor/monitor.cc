@@ -7,12 +7,10 @@
 #include <vector>
 #include "monitor.h"
 
-//#include "monitor.h"
-
 /* \file    monitor.cc
    \details listens on :5560 for events from counteragents like UPS and
             selectively pushes alerts to :5561; see rfc in top dir
- */
+*/
 
 int main (int argc, char **argv) {
     if (argc < 2)
@@ -90,6 +88,7 @@ int main (int argc, char **argv) {
     }
     zsock_destroy (&sub);
     zsock_destroy (&pub);
+    zyre_destroy (&node);
     return 0;
 }
 
