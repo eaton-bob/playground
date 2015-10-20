@@ -3,12 +3,13 @@ PROGRAM_UPS = ups-cli
 PROGRAM_UPSXX = ups-cli++
 PROGRAM_MON = monitor-cli
 PROGRAM_MLM = mlm
+PROGRAM_MLMZ_JIM = mlmz-jim
 PROGRAM_MLM_TEST = mlm-test
 PROGRAM_ZYRE_TRIVIAL = zyre-trivial
 PROGRAM_MALAMUTEZ = malamute-z
 
-PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL) $(PROGRAM_MLM) $(PROGRAM_MLM_TEST)
-# $(PROGRAM_MALAMUTEZ)
+PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL) $(PROGRAM_MLM_TEST) $(PROGRAM_MLMZ_JIM)
+# $(PROGRAM_MALAMUTEZ) $(PROGRAM_MLM)
 PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
 PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
@@ -19,6 +20,11 @@ RM = rm -f
 
 CFLAGS = -I./
 CXXFLAGS = -std=c++11 -lstdc++ -I./ -Icppzmq/
+
+ifdef DEBUG
+CFLAGS += -g
+CXXFLAGS += -g
+endif
 
 # Common LDFLAGS
 LDFLAGS = -lczmq -lzmq -lzyre
@@ -49,6 +55,9 @@ $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_MLM): mlm.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDFLAGS_MLM)
+
+$(PROGRAM_MLMZ_JIM): mlmz/mlmz-jim.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDFLAGS_MLM)
 
 $(PROGRAM_MLM_TEST): temp/test.c
