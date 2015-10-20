@@ -28,4 +28,4 @@ The protocol consists of one message:
 
 Where "name" is a unique name for the asset, and "/" indicates a multipart message. STATE values "ON", "OFF", "GONE".
 
-The MONITOR peer MUST send a state message at reguar intervals, e.g. once per second otherwise it's considered gone.
+The MONITOR peer MUST send a state (HE/ART/BEET) message at reguar intervals, e.g. once per second otherwise it's considered gone.
