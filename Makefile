@@ -11,7 +11,7 @@ PROGRAMS = $(PROGRAMS_C)# $(PROGRAMS_CXX)
 #SOURCES_C = $(addsuffix .c,$(PROGRAMS_C))
 #SOURCES_CXX = $(addsuffix .cc,$(PROGRAMS_CXX))
 
-CFLAGS = -lczmq -lzmq
+CFLAGS = -lzmq -lczmq
 CXXFLAGS = -lczmq -lzmq -std=c++11 -lstdc++ -I.
 
 # Addition for special cases
@@ -25,13 +25,13 @@ clean:
 	$(RM) -f $(PROGRAMS)
 
 $(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -lzyre -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_ZYRE)
 
 $(PROGRAM_UPS): ups/ups.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_ZYRE)
 
 $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
-	$(CC) $(CFLAGS) $(CFLAGS_ZYRE) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS) $(CFLAGS_ZYRE)
 
 $(PROGRAM_UPSXX): ups/ups.cxx
 	@echo "$(CXX) $(CXXFLAGS) -o $@ $^"; \
