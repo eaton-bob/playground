@@ -41,6 +41,8 @@ s_find_the_endpoint(void) {
     zyre_destroy (&node);
 }
 
+#define HB_WATREMARK 5
+
 int main(int argc, char** argv) {
 
     zsys_info("Getting the endpoint ...");
@@ -51,9 +53,27 @@ int main(int argc, char** argv) {
     zsock_t *client = zsock_new_sub(endpoint, "");
     assert (client);
 
+    zpoller_t *pool = zpoller_new(client, NULL);
+
+    int hb_missed = 0;
     while (!zsys_interrupted) {
         char *msg, *ups, *state;
-        int r = zstr_recvx(client, &ups, &msg, &state, NULL);
+        zsocket_t *which = zpoller_wait(poller, 1000);
+
+        // did not get the heartbeet at least
+        if (!which) {
+            hb_missed += 1;
+            if (hb_missed < HB_WATREMARK)
+                continue;
+
+            hb_missed = 0;
+            zsys_info("Connection lost, getting the endpoint ...");
+            char *endpoint = s_find_the_endpoint();
+            assert (endpoint);
+            zsys_info("Got %s ...", endpoint);
+        }
+
+        int r = zstr_recvx(which, &ups, &msg, &state, NULL);
         if (msg && streq(msg, "ALERT"))
             zsys_info("Got ALERT for ups '%s', state '%s', sending an email", ups, state);
         else
