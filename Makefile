@@ -3,8 +3,10 @@ PROGRAM_UPS = ups-cli
 PROGRAM_UPSXX = ups-cli++
 PROGRAM_MON = monitor-cli
 PROGRAM_ZYRE_TRIVIAL = zyre-trivial
+PROGRAM_MALAMUTEZ = malamute-z
 
 PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL)
+# $(PROGRAM_MALAMUTEZ)
 PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
 PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
@@ -37,6 +39,9 @@ $(PROGRAM_UPSXX): ups/ups.cc
 
 $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(PROGRAM_MALAMUTEZ): malamutez/malamute.c
+	$(CC) $(CFLAGS) -lmalamute -o $@ $^
 
 check-zmq-hpp-presence:
 	@if (echo '#define __ZMQ_HPP_INCLUDED__'; echo '#include <zmq.hpp>' ) | gcc -E $(CXXFLAGS) -x 'c++' - > /dev/null ; then : ; else RES=$$?; \
