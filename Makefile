@@ -45,7 +45,7 @@ $(PROGRAM_MLM): mlm.c
 	$(CC) $(CFLAGS) -lmlm -o $@ $^
 
 $(PROGRAM_MALAMUTEZ): malamutez/malamute.c
-	$(CC) $(CFLAGS) -lmalamute -o $@ $^
+	$(CC) $(CFLAGS) -lmlm -o $@ $^
 
 check-zmq-hpp-presence:
 	@if (echo '#define __ZMQ_HPP_INCLUDED__'; echo '#include <zmq.hpp>' ) | gcc -E $(CXXFLAGS) -x 'c++' - > /dev/null ; then : ; else RES=$$?; \
