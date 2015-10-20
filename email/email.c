@@ -32,6 +32,7 @@ s_find_the_endpoint(void)
     }
     zyre_stop (node);
     zyre_destroy (&node);
+    return endpoint;
 }
 
 
@@ -42,11 +43,11 @@ int main (int argc, char** argv)
     zsys_info ("Getting the endpoint ...");
     char *endpoint = s_find_the_endpoint ();
     assert (endpoint);
-    zsys_info("Got %s ...", endpoint);
+    zsys_info ("Got %s ...", endpoint);
 
     zsock_t *client = zsock_new_sub (endpoint, "");
     assert (client);
-    zstr_free(&endpoint);
+    zstr_free (&endpoint);
 
     zpoller_t *pool = zpoller_new (client, NULL);
 
@@ -69,25 +70,25 @@ int main (int argc, char** argv)
 
             zsock_destroy(&client);
 
-            client = zsock_new_sub(endpoint, "");
+            client = zsock_new_sub (endpoint, "");
             assert (client);
-            zstr_free(&endpoint);
+            zstr_free (&endpoint);
         }
         int r = zstr_recvx (which, &ups, &msg, &state, NULL);
         if (msg) {
             if (streq (msg, "ALERT"))
-                zsys_info ("Got ALERT for ups '%s', state '%s', sending an email", 
+                zsys_info ("Got ALERT for ups '%s', state '%s', sending an email",
                     ups, state);
-            else 
-            if (streq(msg, "ART"))
-                zsys_debug("Got heartbeat message");
+            else if (streq(msg, "ART"))
+                zsys_debug ("Got heartbeat message");
             else
-                zsys_error ("UNEXPECTED: ups = %s, msg = %s, state = %s\n", 
-                ups, msg, state);
+                zsys_error ("UNEXPECTED: ups = %s, msg = %s, state = %s\n",
+                    ups, msg, state);
         }
         zstr_free (&msg);
         zstr_free (&ups);
         zstr_free (&state);
     }
     zsock_destroy (&client);
+    return 0;
 }
