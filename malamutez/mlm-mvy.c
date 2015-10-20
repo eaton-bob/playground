@@ -56,8 +56,9 @@ int main() {
             broker = s_broker (endpoint);
         }
 
-        if (!which && to_shout) {
-            zyre_shouts (node, "MALAMUTE", "%s", endpoint);
+        if (!which) {
+            if (to_shout)
+                zyre_shouts (node, "MALAMUTE", "%s", endpoint);
             continue;
         }
 
@@ -69,10 +70,12 @@ int main() {
             case ZYRE_EVENT_SHOUT:
                 {
                 int r = strcmp (UUID, zyre_event_sender (event));
-                if (!r)
+                if (!r) {
                     last_leader_shout = time(NULL);
+                    zsys_debug ("Leader (%s)SHOUTS", zyre_event_sender (event));
+                }
                 if (r >= 0)
-                    goto event_destroy;
+                    break;
 
                 zsys_debug ("UUID: %s, sender: %s, strcmp: %d",
                         UUID,
@@ -83,6 +86,7 @@ int main() {
                 to_shout = false;
                 zstr_free (&UUID);
                 UUID = strdup (zyre_event_sender (event));
+                zsys_debug ("new UUID = %s", UUID);
                 zstr_free (&endpoint);
                 zmsg_t *msg = zyre_event_msg (event);
                 endpoint = strdup (zmsg_popstr(msg));
