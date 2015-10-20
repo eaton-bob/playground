@@ -1,9 +1,11 @@
 #include <malamute.h>
 #include <zyre.h>
 
+#define TIMEOUT 5000
+
 int main(int argc, char** argv) {
     if(argc != 3) {
-        printf("usage %s address name\n", argv[0]);
+        printf("usage ./%s address name\n", argv[0]);
         exit(1);
     }
     const char *CHANNEL = "MALAMUTE";
@@ -22,21 +24,52 @@ int main(int argc, char** argv) {
 
     char *leader_uuid = strdup(zyre_uuid(node));
     zsys_info("my uuid is %s", leader_uuid);
-
     bool isLeader = true;
+    time_t leaderLastSeen = time(NULL);
+    zpoller_t *poller = zpoller_new(zyre_socket (node), NULL);
     while (!zsys_interrupted)
     {
+        zsock_t *which = zpoller_wait(poller, TIMEOUT);
+        if (which == NULL)
+        {
+            // time is out, no information from the leader
+            // we will end up here is:
+            //    I am a leader
+            //    no event at all had happend
+            if ( !isLeader )
+            {
+                // become leader first
+                zsys_info ("LEADER IS OUT");
+                isLeader = true;
+                free(leader_uuid);
+                leader_uuid = strdup(zyre_uuid(node));
+                free(leader_endpoint);
+                leader_endpoint = strdup(argv[1]);
+                zsys_info("MY_MLM_CLIENT_STOP");
+                zsys_info("MY_MLM_SERVER_START");
+            }
+            // and then shout
+            zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
+        }
         zyre_event_t *event = zyre_event_new (node);
         const char *sender_uuid = zyre_event_sender (event);
+
         if (zyre_event_type (event) == ZYRE_EVENT_SHOUT)
         {
             // highest string becomes a leader            .
             zsys_info ("my_leader_uui %s", leader_uuid);
             zsys_info ("my_sender_uui %s", sender_uuid);
-            if (strcmp (sender_uuid, leader_uuid) > 0 )
+            int compare_result = strcmp (sender_uuid, leader_uuid);
+            if (compare_result == 0)
+            {
+                // leader is still there
+                leaderLastSeen = time(NULL);
+            }
+            else if (compare_result > 0 )
             {
                 // We have a new leader
                 zsys_info ("WINS %s", sender_uuid);
+                leaderLastSeen = time(NULL);
                 // get leaders endpoint
                 zmsg_t *msg = zyre_event_msg(event);
                 char *str = zmsg_popstr(msg);
@@ -70,25 +103,28 @@ int main(int argc, char** argv) {
 
             }
         }
-        else if (zyre_event_type (event) == ZYRE_EVENT_EXIT)
-        {
-            zsys_info ("GOT EXIT");
-            // DO EXIT
-            if ( strcmp (leader_uuid, sender_uuid)==0)
-            {
-                isLeader = true;
-                zsys_info ("LEADER IS OUT");
-                free(leader_uuid);
-                leader_uuid = strdup(zyre_uuid(node));
-                free(leader_endpoint);
-                leader_endpoint = strdup(argv[1]);
-                zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
-                zsys_info("MY_MLM_CLIENT_STOP");
-                zsys_info("MY_MLM_SERVER_START");
-            }
-        }
         else
         {
+
+            if ( time(NULL) - leaderLastSeen > 5 )
+            {
+                // no messages from leader for defined period of time
+                if ( !isLeader )
+                {
+                    // become leader first
+                    zsys_info ("LEADER IS OUT");
+                    isLeader = true;
+                    free(leader_uuid);
+                    leader_uuid = strdup(zyre_uuid(node));
+                    free(leader_endpoint);
+                    leader_endpoint = strdup(argv[1]);
+                    zsys_info("MY_MLM_CLIENT_STOP");
+                    zsys_info("MY_MLM_SERVER_START");
+                }
+                // and then shout
+                zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
+                continue;
+            }
             if (isLeader)
             {
                 zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
@@ -96,6 +132,7 @@ int main(int argc, char** argv) {
             }
             else
             {
+                // we still have time to wait for shout from leader
                 zsys_info ("GOT NOT SHOUT  I am not a leader");
             }
         }
