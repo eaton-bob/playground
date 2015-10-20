@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
     char *endpoint = s_find_the_endpoint();
     assert (endpoint);
     zsys_info("Got %s ...", endpoint);
+    zstr_free(&endpoint);
 
     zsock_t *client = zsock_new_sub(endpoint, "");
     assert (client);
@@ -58,7 +59,7 @@ int main(int argc, char** argv) {
     int hb_missed = 0;
     while (!zsys_interrupted) {
         char *msg, *ups, *state;
-        zsocket_t *which = zpoller_wait(poller, 1000);
+        zsocket_t *which = zpoller_wait(pool, 1000);
 
         // did not get the heartbeet at least
         if (!which) {
@@ -71,11 +72,14 @@ int main(int argc, char** argv) {
             char *endpoint = s_find_the_endpoint();
             assert (endpoint);
             zsys_info("Got %s ...", endpoint);
+            zstr_free(&endpoint);
         }
 
         int r = zstr_recvx(which, &ups, &msg, &state, NULL);
         if (msg && streq(msg, "ALERT"))
             zsys_info("Got ALERT for ups '%s', state '%s', sending an email", ups, state);
+        else if (msg && streq(msg, "ART"))
+            zsys_debug("Got heartbeet message");
         else
             zsys_error("UNEXPECTED: ups = %s, msg = %s, state = %s\n", ups, msg, state);
         zstr_free(&msg);
@@ -83,6 +87,5 @@ int main(int argc, char** argv) {
         zstr_free(&state);
     }
 
-    zstr_free(&endpoint);
     zsock_destroy(&client);
 }
