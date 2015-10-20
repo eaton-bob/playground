@@ -2,9 +2,10 @@ PROGRAM_EMAIL = email-cli
 PROGRAM_UPS = ups-cli
 PROGRAM_UPSXX = ups-cli++
 PROGRAM_MON = monitor-cli
+PROGRAM_MLM = mlm
 PROGRAM_ZYRE_TRIVIAL = zyre-trivial
 
-PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL)
+PROGRAMS_C = $(PROGRAM_EMAIL) $(PROGRAM_UPS) $(PROGRAM_ZYRE_TRIVIAL) $(PROGRAM_MLM)
 PROGRAMS_CXX = $(PROGRAM_MON) $(PROGRAM_UPSXX)
 PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
@@ -37,6 +38,9 @@ $(PROGRAM_UPSXX): ups/ups.cc
 
 $(PROGRAM_MON): monitor/monitor.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(PROGRAM_MLM): mlm.c
+	$(CC) $(CFLAGS) -lmlm -o $@ $^
 
 check-zmq-hpp-presence:
 	@if (echo '#define __ZMQ_HPP_INCLUDED__'; echo '#include <zmq.hpp>' ) | gcc -E $(CXXFLAGS) -x 'c++' - > /dev/null ; then : ; else RES=$$?; \
