@@ -17,11 +17,14 @@ PROGRAMS = $(PROGRAMS_C) $(PROGRAMS_CXX)
 
 RM = rm -f
 
-CFLAGS = -lczmq -lzmq -lzyre
-CXXFLAGS = -lczmq -lzmq -lzyre -std=c++11 -lstdc++ -I./ -Icppzmq/
+CFLAGS = -I./
+CXXFLAGS = -std=c++11 -lstdc++ -I./ -Icppzmq/
+
+# Common LDFLAGS
+LDFLAGS = -lczmq -lzmq -lzyre
 
 # Special linking for some (not all) programs
-CFLAGS_MLM = -lmlm
+LDFLAGS_MLM = -lmlm
 
 PHONY = all, clean
 
@@ -31,28 +34,28 @@ clean:
 	$(RM) $(PROGRAMS)
 
 $(PROGRAM_EMAIL): email/email.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_UPS): ups/ups.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_ZYRE_TRIVIAL): zyre-trivial-src/zyre-trivial.c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_UPSXX): ups/ups.cc
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_MON): monitor/monitor.cc
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(PROGRAM_MLM): mlm.c
-	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDFLAGS_MLM)
 
 $(PROGRAM_MLM_TEST): temp/test.c
-	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDFLAGS_MLM)
 
 $(PROGRAM_MALAMUTEZ): malamutez/malamute.c
-	$(CC) $(CFLAGS) $(CFLAGS_MLM) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDFLAGS_MLM)
 
 check-zmq-hpp-presence:
 	@if (echo '#define __ZMQ_HPP_INCLUDED__'; echo '#include <zmq.hpp>' ) | gcc -E $(CXXFLAGS) -x 'c++' - > /dev/null ; then : ; else RES=$$?; \
