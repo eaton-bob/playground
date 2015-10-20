@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -f mlm_test
+gcc -lczmq -lmlm test.c -o mlm_test
