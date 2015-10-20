@@ -1,19 +1,20 @@
 #include <malamute.h>
 #include <zyre.h>
 
-#define MY_ENDPOINT "tcp://192.168.199.115:4444"
-
-int main() {
-
+int main(int argc, char** argv) {
+    if(argc != 3) {
+        printf("usage %s address name\n", argv[0]);
+        exit(1);
+    }
     const char *CHANNEL = "MALAMUTE";
 
-    char *leader_endpoint = strdup(MY_ENDPOINT);
+    char *leader_endpoint = strdup(argv[1]);
 
     zactor_t *broker = zactor_new (mlm_server, NULL);
     zsock_send (broker, "ss", "BIND", leader_endpoint);
     zstr_send (broker, "VERBOSE");
 
-    zyre_t *node = zyre_new("ace-zyre");
+    zyre_t *node = zyre_new(argv[2]);
     assert(node);
     zyre_set_verbose (node);
     zyre_start (node);
@@ -60,7 +61,7 @@ int main() {
                 if (isLeader)
                 {
                     // I am still the leader
-                    zyre_shouts (node, CHANNEL, leader_endpoint);
+                    zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
                 }
                 else
                 {
@@ -80,8 +81,8 @@ int main() {
                 free(leader_uuid);
                 leader_uuid = strdup(zyre_uuid(node));
                 free(leader_endpoint);
-                leader_endpoint = strdup(MY_ENDPOINT);
-                zyre_shouts (node, CHANNEL, leader_endpoint);
+                leader_endpoint = strdup(argv[1]);
+                zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
                 zsys_info("MY_MLM_CLIENT_STOP");
                 zsys_info("MY_MLM_SERVER_START");
             }
@@ -90,7 +91,7 @@ int main() {
         {
             if (isLeader)
             {
-                zyre_shouts (node, CHANNEL, leader_endpoint);
+                zyre_shouts (node, CHANNEL, "%s", leader_endpoint);
                 zsys_info ("GOT NOT SHOUT:  I am still a leader -> shout");
             }
             else
