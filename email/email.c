@@ -42,11 +42,11 @@ int main (int argc, char** argv)
     zsys_info ("Getting the endpoint ...");
     char *endpoint = s_find_the_endpoint ();
     assert (endpoint);
-    zsys_info ("Got %s ...", endpoint);
-    zstr_free (&endpoint);
+    zsys_info("Got %s ...", endpoint);
 
     zsock_t *client = zsock_new_sub (endpoint, "");
     assert (client);
+    zstr_free(&endpoint);
 
     zpoller_t *pool = zpoller_new (client, NULL);
 
@@ -65,8 +65,13 @@ int main (int argc, char** argv)
             zsys_info ("Connection lost, getting the endpoint ...");
             char *endpoint = s_find_the_endpoint();
             assert (endpoint);
-            zsys_info ("Got %s ...", endpoint);
-            zstr_free (&endpoint);
+            zsys_info("Got %s ...", endpoint);
+
+            zsock_destroy(&client);
+
+            client = zsock_new_sub(endpoint, "");
+            assert (client);
+            zstr_free(&endpoint);
         }
         int r = zstr_recvx (which, &ups, &msg, &state, NULL);
         if (msg) {
