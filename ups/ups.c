@@ -16,26 +16,34 @@ int main(int argc, char** argv) {
     char *addr = NULL;
     zyre_t *n = zyre_new(argv[1]);
     zyre_start(n);
-    zyre_join(n, "BIOS");
-    while(!zsys_interrupted && addr == NULL) {
-        zyre_event_t *e = zyre_event_new(n);
-        if(!e)
-            break;
-        if(zyre_event_headers(e) && zyre_event_header(e, "HAP_SERVER") != NULL) {
-            addr = strdup(zyre_event_header(e, "HAP_SERVER"));
-            printf("Address: %s\n", addr);
-        }
-        zyre_event_destroy(&e);
-    }
-    zyre_destroy(&n);
+    zyre_join(n, "MONITORS");
 
+    char *hap_server = NULL;
+    while (!zsys_interrupted) { 
+        zmsg_t *zyre_msg = zyre_recv (n);
+        zmsg_print (zyre_msg);
+        char *command = zmsg_popstr (zyre_msg);
+        if (!streq (command, "SHOUT"))
+            continue;
+        char *uuid = zmsg_popstr (zyre_msg);
+        char *name = zmsg_popstr (zyre_msg);
+        char *channel = zmsg_popstr (zyre_msg);
+        hap_server = zmsg_popstr (zyre_msg);
+        free (uuid); free (name); free (channel); free (command);
+        break;
+    }
+    zsys_debug ("initial HAP server: %s", hap_server);
+    
+    addr = hap_server;
     if(addr == NULL)
         exit(1);
 
     zsock_t * sc = zsock_new(ZMQ_PUB);
     zsock_connect(sc, "%s", addr);
+    zsys_debug ("socket created, connected.");
     bool state = random()%2;
     int timeout = 0;
+    int cummulative = 0;
     while(!zsys_interrupted) {
         if(timeout == 0) {
             state = !state;
@@ -50,6 +58,30 @@ int main(int argc, char** argv) {
             zsys_debug("UPS %s OFF", argv[1]);
         }
         sleep(1);
+        cummulative++;
+        if (cummulative == 5) {
+            char *new_hap;
+            while (!zsys_interrupted) { 
+                zmsg_t *zyre_msg = zyre_recv (n);
+                zmsg_print (zyre_msg);
+                char *command = zmsg_popstr (zyre_msg);
+                if (!streq (command, "SHOUT"))
+                    continue;
+                char *uuid = zmsg_popstr (zyre_msg);
+                char *name = zmsg_popstr (zyre_msg);
+                char *channel = zmsg_popstr (zyre_msg);
+                new_hap = zmsg_popstr (zyre_msg);
+                free (uuid); free (name); free (channel); free (command);
+                break;
+            }
+            if (!streq (new_hap, hap_server)) {
+                free (hap_server); hap_server = new_hap;
+                zsock_connect(sc, "%s", addr);
+            }
+            cummulative = 0;
+        }
     }
+    if (hap_server)
+        free (hap_server);
     zsock_destroy(&sc);
 }
