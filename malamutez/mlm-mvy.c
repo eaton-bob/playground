@@ -41,10 +41,23 @@ int main() {
 
     zpoller_t *poller = zpoller_new(zyre_socket (node), NULL);
 
+    time_t last_leader_shout;
+
     // 3. get the comments
     while (!zsys_interrupted) {
 
         zsock_t *which = zpoller_wait(poller, 1000);
+
+        if (time(NULL) - last_leader_shout > 5) {
+            to_shout = true;
+            zstr_free (&UUID);
+            UUID = strdup (zyre_uuid (node));
+            zstr_free (&endpoint);
+            endpoint = strdup ("tcp://192.168.1.105:9999");
+            zactor_destroy (&broker);
+            broker = s_broker (endpoint);
+        }
+
         if (!which && to_shout) {
             zyre_shouts (node, "MALAMUTE", "%s", endpoint);
             continue;
@@ -56,7 +69,11 @@ int main() {
 
         switch (zyre_event_type (event)) {
             case ZYRE_EVENT_SHOUT:
-                if (strcmp (UUID, zyre_event_sender (event)) >= 0)
+                {
+                int r = strcmp (UUID, zyre_event_sender (event));
+                if (!r)
+                    last_leader_shout = time(NULL);
+                if (r >= 0)
                     goto event_destroy;
 
                 zsys_debug ("UUID: %s, sender: %s, strcmp: %d",
@@ -77,17 +94,7 @@ int main() {
                 zclock_sleep(1000);
 
                 break;
-
-            case ZYRE_EVENT_EXIT:
-                if (streq (UUID, zyre_event_sender (event)))
-                {
-                    to_shout = true;
-                    zstr_free (&UUID);
-                    UUID = strdup (zyre_uuid (node));
-                    zstr_free (&endpoint);
-                    endpoint = strdup ("tcp://192.168.1.105:9999");
                 }
-                break;
 
         }
 
