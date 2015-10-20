@@ -21,7 +21,7 @@ int main (int argc, char **argv) {
     zyre_t *node = zyre_new ("monitor");
     assert (node);
     zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append(":5560").c_str ());
-    zyre_set_header (node, "HAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append(":5561").c_str ());
+    zyre_set_header (node, "GAP_SERVER", "%s", std::string("tcp://").append (argv[1]).append(":5561").c_str ());
     zyre_start (node);
 
 

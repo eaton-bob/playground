@@ -26,9 +26,11 @@ s_find_the_endpoint(void) {
         if (!event)
             break;
 
-        const char* ip_recv = zyre_event_header (event, "GAP_SERVER");
-        if (ip_recv) {
-            endpoint = strdup(ip_recv);
+        if (zyre_event_headers (event)) {
+            const char* ip_recv = zyre_event_header (event, "GAP_SERVER");
+            if (ip_recv) {
+                endpoint = strdup(ip_recv);
+            }
         }
         //zstr_free(&ip_recv);
         zyre_event_print (event);
