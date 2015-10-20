@@ -48,6 +48,7 @@ int main (int argc, char **argv) {
 
     while (!zsys_interrupted) {
         zsock_t *which = (zsock_t *) zpoller_wait (poller, 1000);
+        zstr_sendx (pub, "HE", "ART", "BEET", NULL);
         uint64_t timestamp = zclock_mono ();
 
         if (zpoller_expired (poller)) {
