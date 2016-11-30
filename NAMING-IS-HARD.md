@@ -7,6 +7,7 @@ Naming should cover
  * daemon name
  * cli tool(s) name
  * path names
+ * can spill over to systemd unit names (services, timers, etc.) - although several units may be defined for different deliverables of the same source-code repo (e.g. both an agent or server and some house-keeping timer)
 
 
 # [WIP] Candidates
@@ -17,8 +18,8 @@ Naming should cover
  * jmi_
  * xmi_
  * XLII_
- * fortuify_
- * fotify
+ * fortuity_
+ * fotify_
 
 # Ideas from AQU
 -	Don’t touch binaries names (apps and shared libs), apart if they have “bios” in the name
