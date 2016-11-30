@@ -4,6 +4,7 @@ Naming should cover
  * library name
  * C functions
  * repo / project name
+ * package name
  * daemon name
  * cli tool(s) name
  * path names
