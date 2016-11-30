@@ -1,5 +1,6 @@
 # Problem: naming conventions for "42ity" project
 
+Naming should cover
  * library name
  * C functions
  * repo / project name
