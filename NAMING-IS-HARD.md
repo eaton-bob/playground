@@ -6,6 +6,7 @@ Naming should cover
  * repo / project name
  * daemon name
  * cli tool(s) name
+ * path names
 
 
 # [WIP] Candidates
