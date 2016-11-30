@@ -38,6 +38,8 @@ See `bios-agent-nut` and `bios-agent-nut-configurator`. If we'll use longer name
 
 NOTE: Make up the mind about underscores vs. dashes, the tree above is an example fo why mixing them is ugly to see and maintain and code.
 
+NOTE: MVY: I see no issue. Binary names, configuration files and everything visible to end user have dashes. Source code files are with underscores, so they're compatible with C compilers. There's only one exception, the dash in library name - frankly I've no preference, buty it'd be trivial to fix zproject to do that.
+
 ## C functions
 
     fty_proto_t *msg = fty_proto_new ();
