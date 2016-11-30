@@ -45,7 +45,7 @@ Naming should cover
 
 # Ideas from Jana:
 - repository
-    - complete name without any abbreviations or prefixes (like agent-, kpi-, ipc-)
+    - complete name without any abbreviations or agent- prefix
     - rename epfl to proxy
 agent - <repo>-agent
 server - <repo>-server
