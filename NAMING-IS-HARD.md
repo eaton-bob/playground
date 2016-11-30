@@ -24,16 +24,16 @@ Naming should cover
 # Ideas from AQU
 -	Don’t touch binaries names (apps and shared libs), apart if they have “bios” in the name
 -	Modify only package names to expose “42ity”, including packages descriptions
-o	Rule:
-	Lower case “42ity” in the names, upper case “42ITy” for the descriptions and texts
-o	Example:
-	agent-asset => 42ity-agent-asset
-•	Description: 42ITy - Assets management agent
-	core => 42ity-core
-•	Description: 42ITy - Core functionality
-	libbiosproto => lib42ityproto    
-•	maybe the “proto” part should be reworded?! => lib42ity-agent or lib42ity-protocol
--	system units
-o	probably good to expose 42ity in these names… to be discussed
--	repository names 
-o	not sure if we need to rename to include 42ity (lower case, as for the package name), probably not (apart from libbiosproto…).
+- Rule:
+-- Lower case “42ity” in the names, upper case “42ITy” for the descriptions and texts
+--- Example:
+---- agent-asset => 42ity-agent-asset
+--- Description: 42ITy - Assets management agent
+---- core => 42ity-core
+--- Description: 42ITy - Core functionality
+---- libbiosproto => lib42ityproto    
+-- maybe the “proto” part should be reworded?! => lib42ity-agent or lib42ity-protocol
+- system units
+-- probably good to expose 42ity in these names... to be discussed
+- repository names 
+-- not sure if we need to rename to include 42ity (lower case, as for the package name), probably not (apart from libbiosproto...).
