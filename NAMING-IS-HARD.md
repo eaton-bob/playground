@@ -20,6 +20,9 @@ Naming should cover
  * XLII_
  * fortuity_
  * fotify_
+ * e
+ * eipi_
+ * pmi_
 
 # Ideas from AQU
 -	Don’t touch binaries names (apps and shared libs), apart if they have “bios” in the name
@@ -39,3 +42,20 @@ Naming should cover
 
 - repository names 
     - not sure if we need to rename to include 42ity (lower case, as for the package name), probably not (apart from libbiosproto...).
+
+# Ideas from Jana:
+- repository
+    - complete name without any abbreviations or prefixes (like agent-, kpi-, ipc-)
+    - rename epfl to proxy
+agent - <repo>-agent
+server - <repo>-server
+CLI - 
+    * etn-pi-<name>
+    * etn-pmi-<name>
+    * etn-ipc-<name>
+    * etnipc-<name>
+    * eipi-<name>
+    (from Karol)
+    * etn_<name>_cli
+    * joe_<name>_cli
+
