@@ -17,9 +17,9 @@ Naming should cover:
 
 **FTY** is a shortcut of 42ity, which is short and can be used as C identifier.
 
-The next goal is to remove repetitive and redundant word "agent". It have a little information, plus programname in unix is limited to 15 characters, so wasting the first X characters will disable rsyslog filtering.
+The next goal is to remove repetitive and redundant word "agent". It carries little information, plus programname in unix is limited to 15 characters (or at least many programs truncate it internally when processing the names as informative strings), so wasting the first X characters will damage rsyslog filtering for example.
 
-See bios-agent-nut and bios-agent-nut-configurator. If we'll use longer name (snmp), the programname for both agents will be the same!!
+See `bios-agent-nut` and `bios-agent-nut-configurator`. If we'll use longer name (say, `snmp` instead of `nut`), the programname for both agents will be (seem) the same!!
 
 ## Example repo
 
