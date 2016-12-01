@@ -22,7 +22,7 @@ Building on "fty" and "42ITy" / "42ity"
 [options="header"]
 |=======================================================================================
 | Current repository name | New repository name | Binary name(s) | Package name | other
-| agent-asset | asset | | | 
+| agent-asset | asset-list | | | 
 | agent-cm | graphs | | | 
 | agent-metric-store | metric-list | | | WARNING: longer than 15 chars
 | agent-nut | coconut | 42ity-nut, 42ity-nutconf, lib42ity_nut | | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
