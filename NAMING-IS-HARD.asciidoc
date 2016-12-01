@@ -22,22 +22,21 @@ Building on "fty" and "42ITy" / "42ity"
 [options="header"]
 |=======================================================================================
 | Current repository name | New repository name | Binary name(s) | Package name | other
-| agent-asset | 42ity-asset | | | 
-| agent-cm | 42ity-cm? | | | 
-| agent-metric-store | 42ity-metric-store? | | | WARNING: longer than 15 chars
-| agent-nut | 42ity-nut | 42ity-nut, 42ity-nutconf, lib42ity_nut | | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
-| agent-outage | 42ity-outage | | | 
-| agent-rt | 42ity-rt | | | 
-| agent-smtp | 42ity-smtp | | | 
-| agent-th | 42ity-th | | | 
-| agent-tpower | 42ity-tpower | | | 
-| alert-agent | 42ity-alert | | | 
-| alerts-list | 42ity-alerts-list | | | WARNING: longer than 15 chars
-| composite-metrics | 42ity-composite-metrics| | | WARNING: longer than 15 chars
-| core | 42ity-core | | | 
-| kpi-uptime | 42ity-kpi-uptime| | | 
-| legacy-metrics | 42ity-| | | 
-| libbiosproto | lib42ityproto | | | 
+| agent-asset | asset | | | 
+| agent-cm | graphs | | | 
+| agent-metric-store | metric-list | | | WARNING: longer than 15 chars
+| agent-nut | coconut | 42ity-nut, 42ity-nutconf, lib42ity_nut | | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
+| agent-outage | outage | | | 
+| agent-rt | rt | | | 
+| agent-smtp | smtp (transport-smtp) | | | 
+| agent-th | th | | | 
+| agent-tpower | tpower | | | 
+| alert-agent | alert-lua-engine | | | 
+| alerts-list | alert-list | | |
+| composite-metrics | composite-metrics| | |
+| core | core | | | 
+| kpi-uptime | kpi-uptime| | | 
+| libbiosproto | 42ityproto | | | 
 | To | be | completed | | 
 |=======================================================================================
 
