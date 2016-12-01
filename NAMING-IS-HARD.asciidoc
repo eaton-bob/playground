@@ -22,21 +22,21 @@ Building on "fty" and "42ITy" / "42ity"
 [options="header"]
 |=======================================================================================
 | Current repository name | New repository name | Binary name(s) | Package name | other
-| agent-asset | 42ity-asset | | | 
-| agent-cm | 42ity-graphs | | | 
-| agent-metric-store | 42ity-metric | | | WARNING: longer than 15 chars
-| agent-nut | 42ity-nut | 42ity-nut, 42ity-nutconf, lib42ity_nut | | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
-| agent-outage | 42ity-outage | | | 
-| agent-rt | 42ity-metric-cache | | | 
-| agent-smtp | 42ity-smtp (42ity-transport-smtp) | | | 
-| agent-th | 42ity-th | | | 
-| agent-tpower | 42ity-tpower | | | 
-| alert-agent | 42ity-alert-engine-lua | | | 
-| alerts-list | 42ity-alert | | |
-| composite-metrics | 42ity-composite-metrics| | |
-| core | 42ity-core | | | 
-| kpi-uptime | 42ity-uptime| | | 
-| libbiosproto | 42ity-proto | | | 
+| agent-asset | 42ity-asset | | 42ity-asset | 
+| agent-cm | 42ity-graphs | | 42ity-graphs | 
+| agent-metric-store | 42ity-metric | | 42ity-metric | WARNING: longer than 15 chars
+| agent-nut | 42ity-nut | 42ity-nut, 42ity-nutconf, lib42ity_nut | 42ity-nut | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
+| agent-outage | 42ity-outage | | 42ity-outage | 
+| agent-rt | 42ity-metric-cache | | 42ity-metric-cache | 
+| agent-smtp | 42ity-smtp (42ity-transport-smtp) | | 42ity-smtp | 
+| agent-th | 42ity-th | | 42ity-th | proposal: 42ity-env[ironment]?
+| agent-tpower | 42ity-tpower | | 42ity-tpower | 
+| alert-agent | 42ity-alert-engine-lua | | 42ity-alert-engine-lua | 
+| alerts-list | 42ity-alert | | 42ity-alert |
+| composite-metrics | 42ity-composite-metrics| | 42ity-composite-metrics|
+| core | 42ity-core | | 42ity-core | 
+| kpi-uptime | 42ity-uptime | | 42ity-uptime| 
+| libbiosproto | 42ity-proto | | 42ity-proto | 
 | To | be | completed | | 
 |=======================================================================================
 
