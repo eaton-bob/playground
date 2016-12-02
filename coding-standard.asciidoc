@@ -1,0 +1,115 @@
+Coding style
+============
+:Email:     EatonIPCOpensource@eaton.com
+:Date:      2.12.2016
+:Revision:  1.0
+
+This guide is inspired by http://zeromq.org/docs:style
+
+
+When making non-formatting changes, please increase the revision number.
+
+== General rules
+
+* *There is NO limit on maximum line length.*
++
+However developers should keep lines to a reasonable length where possible.
++
+* *Both C and C\+\+ comments are allowed. Use common sense.*
++
+I.e. C style comments `/* */` should be used for large block of comments. The
+code itself should be commented by C++ line comments `//`)
++
+* *C++ style line comment starts with two slashes followed by two spaces.*
++
+----
+//  This is a C++ comment.
+----
+
+== Identifiers
+
+* Please, don't use https://en.wikipedia.org/wiki/Hungarian_notation[Hungarian notation] :)
+* Identifiers should be meaningful rather than arbitrary.
+
+== Code blocks
+
+* For functions, structures, classes, enums and namespaces both opening bracket and closing bracket are placed on separate lines
++
+----
+void foo ()
+{
+    ...
+}
+----
++
+* Opening bracket of cycles (+for+, +while+) and +if+ statements should be on the same line as control statement
++
+----
+if (sum > 1000) {
+    ....
+}
+----
++
+* +Else+ and +else if+ statements should take one of the following forms
++
+----
+if () {
+}
+else {
+}
+----
++
+----
+if () {
+}
+else
+{
+}
+----
++
+----
+if () {
+}
+else if () {
+}
+----
++
+----
+if () {
+}
+else
+if () {
+}
+----
+
+=== Using functions (function calls)
+Function calls are separated from the expression by *space*:
+
+----
+foo (argument);
+...
+int sum = add (num_1, num_2); 
+----
+
+=== Function prototypes in header files
+Function prototypes in header files must be written in the following way:
+
+----
+//  Comment
+return_type
+    function_name (arguments...);
+----
+
+Example:
+
+----
+void
+    alert_actor (zsock_t *pipe, void *args);
+----
+
+== When in doubt
+[quote, 42ity devs]
+____
+"When in doubt, do it as https://github.com/zeromq/malamute[malamute] does it"
+____
+
