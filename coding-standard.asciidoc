@@ -11,6 +11,8 @@ When making non-formatting changes, please increase the revision number.
 
 == General rules
 
+* C code SHOULD follow https://rfc.zeromq.org/spec:21/CLASS/[C Language Style for Scalability]
+
 * *There is NO limit on maximum line length.*
 +
 However developers should keep lines to a reasonable length where possible.
