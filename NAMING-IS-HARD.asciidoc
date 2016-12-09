@@ -36,7 +36,6 @@ Naming should cover:
 | core | fty-core |
 | libbiosproto | fty-proto |
 | kpi-uptime | NO DECISION YET | Proposal: fty-uptime, fty-kpi-uptime, fty-kpi, fty-kpi-pwr-uptime, fty-indicator, fty-indicator-uptime, fty-power-uptime, ...
-| To | be | completed | | | 
 |=======================================================================================
 
 # FTY prefix
