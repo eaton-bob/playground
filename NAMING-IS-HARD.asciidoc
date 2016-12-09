@@ -36,7 +36,7 @@ Building on "fty" and "42ITy" / "42ity"
 | composite-metrics | 42ity-composite-metrics| fty-metric-composite | | 42ity-composite-metrics|
 | core | 42ity-core | fty-core | | 42ity-core | 
 | kpi-uptime | 42ity-uptime | fty-uptime | | 42ity-uptime| 
-| libbiosproto | 42ity-proto | fty-libproto | | 42ity-proto | 
+| libbiosproto | 42ity-proto | fty-libproto | | 42ity-proto | expansion to "protocol" instead of "proto" to disambiguate from "prototype"?!
 | To | be | completed | | | 
 |=======================================================================================
 
