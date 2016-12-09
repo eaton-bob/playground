@@ -11,32 +11,31 @@ Naming should cover:
  * path names
  * can spill over to systemd unit names (services, timers, etc.) - although several units may be defined for different deliverables of the same source-code repo (e.g. both an agent or server and some house-keeping timer)
 
-# Consolidated naming convention proposal
+# Solution : have a consolidated naming convention
 
-Building on "fty" and "42ITy" / "42ity"
-
-* every function / classe / structure use the "fty_" prefix
-* binaries (daemons / libraries / CLI) use the "42ity-" and remove the "agent-" prefix
+* Repositories, packages and binaries (daemons / libraries / CLI and related manpages / config files) use the "fty-"
+* Repositories and packages description will use "42ITy - <description>" 
+* Implementation files / functions / classes / structures use the "fty_" prefix
 * all IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 
 [options="header"]
 |=======================================================================================
-| Current repository name | New repository name | GGL proposal | Binary name(s) | Package name | other
-| agent-asset | 42ity-asset | fty-asset | | 42ity-asset | 
-| agent-cm | 42ity-graphs | fty-metric-compute | | 42ity-graphs | 
-| agent-metric-store | 42ity-metric | fty-metric-store | | 42ity-metric | WARNING: longer than 15 chars
-| agent-nut | 42ity-nut | fty-nut | 42ity-nut, 42ity-nutconf, lib42ity_nut | 42ity-nut | WARNING: binary 42ity-nutconf may collide with script bios-nutconfig
-| agent-outage | 42ity-outage | fty-outage | | 42ity-outage | 
-| agent-rt | 42ity-metric-cache | fty-metric-cache | | 42ity-metric-cache | 
-| agent-smtp | 42ity-smtp (42ity-transport-smtp) | fty-email | | 42ity-smtp | 
-| agent-th | 42ity-th | fty-th | | 42ity-th | proposal: 42ity-env[ironment]?
-| agent-tpower | 42ity-tpower | fty-total-power | | 42ity-tpower | 
-| alert-agent | 42ity-alert-engine-lua | fty-alert-engine | | 42ity-alert-engine-lua | 
-| alerts-list | 42ity-alert | fty-alert-list | | 42ity-alert |
-| composite-metrics | 42ity-composite-metrics| fty-metric-composite | | 42ity-composite-metrics|
-| core | 42ity-core | fty-core | | 42ity-core | 
-| kpi-uptime | 42ity-uptime | fty-uptime | | 42ity-uptime| 
-| libbiosproto | 42ity-proto | fty-libproto | | 42ity-proto | expansion to "protocol" instead of "proto" to disambiguate from "prototype"?!
+| Current repository name | New repository / package name | Other details
+| agent-asset | fty-asset |
+| agent-cm | fty-metric-compute |
+| agent-metric-store | fty-metric-store |
+| agent-nut | fty-nut |
+| agent-outage | fty-outage |
+| agent-rt | fty-metric-cache |
+| agent-smtp | fty-email |
+| agent-th | fty-sensor-env |
+| agent-tpower | fty-metric-tpower |
+| alert-agent | fty-alert-engine |
+| alerts-list | fty-alert-list |
+| composite-metrics | fty-metric-composite |
+| core | fty-core |
+| libbiosproto | fty-proto |
+| kpi-uptime | NO DECISION YET | Proposal: fty-uptime, fty-kpi-uptime, fty-kpi, fty-kpi-pwr-uptime, fty-indicator, fty-indicator-uptime, fty-power-uptime, ...
 | To | be | completed | | | 
 |=======================================================================================
 
