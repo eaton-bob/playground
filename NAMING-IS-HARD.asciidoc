@@ -45,15 +45,8 @@ All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 | kpi-uptime | NO DECISION YET
 |=======================================================================================
 +
-proposals for kpi-uptime:
-+
- * fty-uptime
- * fty-kpi-uptime
- * fty-kpi
- * fty-kpi-pwr-uptime
- * fty-indicator
- * fty-indicator-uptime
- * fty-power-uptime
+proposals for kpi-uptime: fty-uptime | fty-kpi-uptime | fty-kpi | fty-kpi-pwr-uptime | fty-indicator | fty-indicator-uptime | fty-power-uptime
+ 
 . library name
 . implementation files
 . C functions (prefix of exported functions/API)
