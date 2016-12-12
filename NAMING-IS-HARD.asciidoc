@@ -1,57 +1,74 @@
-# Problem: naming conventions for "42ity" project
+== Naming conventions
 
-Naming should cover:
+Problem:: We don't have naming conventions for "42ity" project.
+Solution:: Define them. 
 
- * library name
- * C functions
- * repo / project name
- * package name
- * daemon name
- * cli tool(s) name
- * path names
- * can spill over to systemd unit names (services, timers, etc.) - although several units may be defined for different deliverables of the same source-code repo (e.g. both an agent or server and some house-keeping timer)
+=== What should naming convention cover:
 
-# Solution : have a consolidated naming convention
+ . github repository name
+ . package naming scheme
+ . library name
+ . implementation files
+ . C functions (prefix of exported functions/API)
+ . daemon name
+ . cli tool(s) name
+ . config files
+ . manpages and documentation
+ . path names
+ . can spill over to systemd unit names (services, timers, etc.) - although several units may be defined for different deliverables of the same source-code repo (e.g. both an agent or server and some house-keeping timer)
 
-* Repositories, packages and binaries (daemons / libraries / CLI and related manpages / config files) use the "fty-"
-* Repositories and packages description will use "42ITy - <description>" 
-* Implementation files / functions / classes / structures use the "fty_" prefix
-* all IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
+=== What naming convention does NOT cover:
+All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 
+=== Winning proposal
+
+. github repository name 
+. package naming scheme 
++
 [options="header"]
 |=======================================================================================
-| Current repository name | New repository / package name | Other details
-| agent-asset | fty-asset |
-| agent-cm | fty-metric-compute |
-| agent-metric-store | fty-metric-store |
-| agent-nut | fty-nut |
-| agent-outage | fty-outage |
-| agent-rt | fty-metric-cache |
-| agent-smtp | fty-email |
-| agent-th | fty-sensor-env |
-| agent-tpower | fty-metric-tpower |
-| alert-agent | fty-alert-engine |
-| alerts-list | fty-alert-list |
-| composite-metrics | fty-metric-composite |
-| core | fty-core |
-| libbiosproto | fty-proto |
-| kpi-uptime | NO DECISION YET | Proposal: fty-uptime, fty-kpi-uptime, fty-kpi, fty-kpi-pwr-uptime, fty-indicator, fty-indicator-uptime, fty-power-uptime, ...
+| Current repository name | New repository / package name
+| agent-asset | fty-asset 
+| agent-cm | fty-metric-compute 
+| agent-metric-store | fty-metric-store 
+| agent-nut | fty-nut 
+| agent-outage | fty-outage 
+| agent-rt | fty-metric-cache 
+| agent-smtp | fty-email 
+| agent-th | fty-sensor-env 
+| agent-tpower | fty-metric-tpower 
+| alert-agent | fty-alert-engine 
+| alerts-list | fty-alert-list 
+| composite-metrics | fty-metric-composite 
+| core | fty-core 
+| libbiosproto | fty-proto 
+| kpi-uptime | NO DECISION YET
 |=======================================================================================
++
+proposals for kpi-uptime: fty-uptime | fty-kpi-uptime | fty-kpi | fty-kpi-pwr-uptime | fty-indicator | fty-indicator-uptime | fty-power-uptime
+ 
+. library name
+. implementation files
+. C functions (prefix of exported functions/API)
+. daemon name
+. cli tool(s) name
+. config files
+. manpages and documentation
+. path names
+. can spill over to systemd
++
+Given the defined prefix ++fty++, points 3. - 11. are left up to the developers to deciide at run-time in minor details like i.e. dash vs underscore, etc ... even though there is a recommendation for it:
+ * binaries (daemons / libraries / CLI and related manpages / config files) should use the dash
+ * implementation files / functions / classes / structures should use the underscore
 
-# FTY prefix
 
-## Rationale
+=== Winning proposal rationale
 
 **FTY** is a shortcut of 42ity, which is short and can be used as C identifier.
 
-The next goal is to remove repetitive and redundant word "agent". It carries little information, plus programname in unix is limited to 15 characters (or at least many programs truncate it internally when processing the names as informative strings), so wasting the first X characters will damage rsyslog filtering for example.
-
-See `bios-agent-nut` and `bios-agent-nut-configurator`. If we'll use longer name (say, `snmp` instead of `nut`), the programname for both agents will be (seem) the same!!
-
-NOTE: Reading up on Posix, XOpen and Linux standards, it seems that historically there was a limit on 14 bytes in a meaningful content for `NAME_MAX` (a filename/directory name component of a larger `PATH_MAX` full pathname), plus one null-byte for the ending. In later standards, including what Linux uses, the limit for `NAME_MAX` is raised to 255 bytes. It seems that some OSes and/or distros and/or FS implementations could interpret it as 255 characters (e.g. where a filesystem natively supports UTF-8 or Unicode, this may be a lot more than 255 octets), while others can truncate an UTF-8 character in the middle (causing invalid strings) due to the strict byte definition of the length limit. There are alternative limits that can come into play, like the formatting strings built into `top`, `ps` and other tools (which may trunkate the output and/or internal storage of usernames, pathnames, argument lists etc.) and the "tag" length limit in SYSLOG RFCs (which `rsyslog` follows by default, but can be set up to exceed).
-
-## Example repo
-
+Example repo::
++
+----
     tree example.git/src/
     example.git/src/
     ├── fty_example_classes.h
@@ -64,62 +81,14 @@ NOTE: Reading up on Posix, XOpen and Linux standards, it seems that historically
     ├── fty_example_server.c
     ├── libfty_example.la
     └── libfty_example.pc.in
+----
 
-NOTE: Make up the mind about underscores vs. dashes, the tree above is an example fo why mixing them is ugly to see and maintain and code. TAB-completion in the source-code directory also suffers (and an underscore involves an extra Shift key to press).
-
-NOTE: MVY: I see no issue. Binary names, configuration files and everything visible to end user have dashes. Source code files are with underscores, so they're compatible with C compilers. There's only one exception, the dash in library name - frankly I've no preference, buty it'd be trivial to fix zproject to do that.
-
-## C functions
-
+C function names::
++
+----
     fty_proto_t *msg = fty_proto_new ();
     zactor_t *server = zactor_new (fty_rt_server, NULL);
     zmsg_t *msg = fty_smtp_encode (uuid, to, subject, body, NULL);
+----    
 
 
-# [WIP] Candidates
- * etn_
- * joe_
- * ipm_
- * inf_
- * jmi_
- * xmi_
- * XLII_
- * fortuity_
- * fotify_
- * e
- * eipi_
- * pmi_
-
-# Ideas from AQU
-
-* Don’t touch binaries names (apps and shared libs), apart if they have "bios" in the name
-* Modify only package names to expose "42ity", including packages descriptions
-* Rule:
-  Lower case "42ity" in the names, upper case "42ITy" for the descriptions and texts
-** Example:
-*** agent-asset -> 42ity-agent-asset:
-**** Description: 42ITy - Assets management agent
-*** core -> 42ity-core:
-**** Description: 42ITy - Core functionality
-*** libbiosproto -> lib42ityproto
-**** maybe the "proto" part should be reworded?! -> lib42ity-agent or lib42ity-protocol 
-** system units:
-*** probably good to expose 42ity in these names... to be discussed 
-** repository names:
-*** not sure if we need to rename to include 42ity (lower case, as for the package name), probably not (apart from libbiosproto...)
-
-# Ideas from Jana:
-* repository
-** complete name without any abbreviations or agent- prefix
-** rename epfl to proxy
-* agent -> <repo>-agent
-* server -> <repo>-server
-* CLI -
-    ** etn-pi-<name>
-    ** etn-pmi-<name>
-    ** etn-ipc-<name>
-    ** etnipc-<name>
-    ** eipi-<name>
-** (from Karol)
-    *** etn_<name>_cli
-    *** joe_<name>_cli
