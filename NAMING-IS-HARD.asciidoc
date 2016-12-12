@@ -64,11 +64,38 @@ proposals for kpi-uptime:
 . path names
 . can spill over to systemd
 +
-Given the defined prefix ++fty++, points 3. - 11. are left up to the developers to deciide at run-time in minor details like i.e. dash vs underscore, etc ... . 
+Given the defined prefix ++fty++, points 3. - 11. are left up to the developers to deciide at run-time in minor details like i.e. dash vs underscore, etc ... even though there is a recommendation for it:
+ * binaries (daemons / libraries / CLI and related manpages / config files) should use the dash
+ * implementation files / functions / classes / structures should use the underscore
 
 
 === Winning proposal rationale
 
 **FTY** is a shortcut of 42ity, which is short and can be used as C identifier.
+
+Example repo::
++
+----
+    tree example.git/src/
+    example.git/src/
+    ├── fty_example_classes.h
+    ├── fty_example_selftest
+    ├── fty_example_selftest.c
+    ├── fty-example
+    ├── fty_example.c
+    ├── fty-example.cfg.in
+    ├── fty-example.service.in
+    ├── fty_example_server.c
+    ├── libfty_example.la
+    └── libfty_example.pc.in
+----
+
+C function names::
++
+----
+    fty_proto_t *msg = fty_proto_new ();
+    zactor_t *server = zactor_new (fty_rt_server, NULL);
+    zmsg_t *msg = fty_smtp_encode (uuid, to, subject, body, NULL);
+----    
 
 
