@@ -42,10 +42,8 @@ All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 | composite-metrics | fty-metric-composite 
 | core | fty-core 
 | libbiosproto | fty-proto 
-| kpi-uptime | NO DECISION YET
+| kpi-uptime | fty-kpi-power-uptime
 |=======================================================================================
-+
-proposals for kpi-uptime: fty-uptime | fty-kpi-uptime | fty-kpi | fty-kpi-pwr-uptime | fty-indicator | fty-indicator-uptime | fty-power-uptime
  
 . library name
 . implementation files
