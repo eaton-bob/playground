@@ -3,7 +3,7 @@
 Problem:: We don't have naming conventions for "42ity" project.
 Solution:: Define them. 
 
-=== What should naming convention cover:
+=== What naming convention does cover:
 
  . github repository name
  . package naming scheme
@@ -20,7 +20,7 @@ Solution:: Define them.
 === What naming convention does NOT cover:
 All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 
-=== Winning proposal
+=== Consolidated proposal
 
 . github repository name 
 . package naming scheme 
@@ -42,10 +42,8 @@ All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 | composite-metrics | fty-metric-composite 
 | core | fty-core 
 | libbiosproto | fty-proto 
-| kpi-uptime | NO DECISION YET
+| kpi-uptime | fty-kpi-power-uptime
 |=======================================================================================
-+
-proposals for kpi-uptime: fty-uptime | fty-kpi-uptime | fty-kpi | fty-kpi-pwr-uptime | fty-indicator | fty-indicator-uptime | fty-power-uptime
  
 . library name
 . implementation files
@@ -57,12 +55,12 @@ proposals for kpi-uptime: fty-uptime | fty-kpi-uptime | fty-kpi | fty-kpi-pwr-up
 . path names
 . can spill over to systemd
 +
-Given the defined prefix ++fty++, points 3. - 11. are left up to the developers to deciide at run-time in minor details like i.e. dash vs underscore, etc ... even though there is a recommendation for it:
+Given the defined prefix ++fty++, points 3. - 11. are left up to the developers to decide at run-time in minor details like i.e. dash vs underscore, etc ... even though there is a recommendation for it:
  * binaries (daemons / libraries / CLI and related manpages / config files) should use the dash
  * implementation files / functions / classes / structures should use the underscore
 
 
-=== Winning proposal rationale
+=== FTY rationale
 
 **FTY** is a shortcut of 42ity, which is short and can be used as C identifier.
 
@@ -75,12 +73,16 @@ Example repo::
     ├── fty_example_selftest
     ├── fty_example_selftest.c
     ├── fty-example
+    ├── fty-example.txt
+    ├── fty-example.7
     ├── fty_example.c
     ├── fty-example.cfg.in
     ├── fty-example.service.in
     ├── fty_example_server.c
     ├── libfty_example.la
-    └── libfty_example.pc.in
+    ├── libfty_example.pc.in
+    ├── libfty_example.txt
+    └── libfty_example.3
 ----
 
 C function names::
