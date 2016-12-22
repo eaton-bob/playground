@@ -29,6 +29,7 @@ All IPC product specific are out of scope (ipc-data, ipc-lcd-engine, ipc-meta)
 |=======================================================================================
 | Current repository name | New repository / package name
 | agent-asset | fty-asset 
+| agent-autoconfig | fty-autoconfig
 | agent-cm | fty-metric-compute 
 | agent-metric-store | fty-metric-store 
 | agent-nut | fty-nut 
