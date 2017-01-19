@@ -33,5 +33,27 @@ about the task (design, etc..).
 reasonably enough time until the end of sprint, this process is repeated.
 
 ## Current Topic: Get rid of agent-autoconfig
-WIP
 
+Agent autoconfig resides in fty-rest.git in `src/agents/autoconfig`.
+It performs auto configuration for:
+* rule templates
+* kpi uptime
+
+### Rule templates
+* Relevant code in `TemplateRuleConfigurator.(h|cc)`, templates in
+`src/agents/autoconfig/rule_templates`.
+* Get rid of the c++ inheritance (Configurator -> RuleConfigurator ->
+TemplateRuleConfigurator) and AutoConfigurationInfo class, cut out the relevant
+code, and hook it into fty-alert-engine by subscribing to asset messages.
+* Don't forget to move directory .../rule_templates into fty-alert-engine repo
+and modify packaging accordingly.
+
+### Kpi uptime
+* Relevant code in `UptimeConfigurator. (h|cc)`
+* There are two possible ways to do this:
+  1. move functionality of UptimeConfigurator.(h|cc) into fty-asset and reuse
+the protocol `SET/<dc>/<ups^1>/.../<ups^2>` already present in
+`fty-kpi-power-uptime`.
+  2. move functionality of UptimeConfigurator.(h|cc) into fty-asset and use asset message
+to convey required information to `fty-kpi-power-uptime`. For this, you'd use `aux` field of
+`fty_proto_t` in the following way, e.g.: name = "DC-Roztoky", aux ["mainups.1"] = "UPS1", ...
