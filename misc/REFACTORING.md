@@ -2,12 +2,12 @@
 
 ## What is this non-sense?
 
-Out team had the fortune to participate in a very good, no-bulsshit, Scrum
+Our team had the fortune to participate in a very good, no-bullshit, Scrum
 training.  We learned that once certain amount of points is established for any
-given sprint, you don't add new tasks (points) to the sprint. Rather than that
+given sprint, you don't add new tasks (points) to the sprint. Rather than that,
 this time should be spent working on any of the following things:
 
-* work on new user stories (preparation; technical, bussines related
+* work on new user stories (preparation; technical, business related
 discussions; specifications etc...) 
 * overhead 
 * technical debt
@@ -23,10 +23,10 @@ Due to our experience with bad actors we want to make it absolutely clear how
 this is going to work. 
 
 1. Each sprint the whole team, through a magical process called voting, will
-decide what is the next priority regarding techical debt. 
+decide what is the next priority regarding technical debt. 
 2. It will be **one** topic, not two.
 3. This topic will be written on the whiteboard. The rest of the ideas are wiped.
-4. At least title is update in this document.
+4. At least the title of "Current topic:" is updated in this document.
 5. Optionally, if it's needed, use this document to write down information
 about the task (design, etc..).
 6. In the rare case when the topic has just been fixed and there is still
