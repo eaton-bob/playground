@@ -3,24 +3,25 @@
 int
 main (int argc, char **argv)
 {
-    if (argc < 2) {
-        zsys_warning ("Need argument");
-        zsys_info ("usage: %s <regex>", argv [0]);
-        return EXIT_FAILURE;
-    }
+    // Same result for the following strings:
+    //      "+"
+    //      "*something"
+    //      "+something"
+    //      som(e|)*thing
+    zrex_t *regex = zrex_new ("som(e|)*thing");
+    assert (regex);
+    zsys_info ("regex_new () ok.");
 
-    zrex_t *regex = zrex_new (argv [1]);
-    if (!regex) {
-        zsys_error ("zrex_new () failed.");
-        return EXIT_FAILURE;
-    }
     if (!zrex_valid (regex)) {
         zsys_error ("regex not valid: %s", zrex_strerror (regex));
         return EXIT_FAILURE;
     }
-    
-    zsys_info ("zrex valid");
+    zsys_info ("zrex_valid () returned true.");
+
+    const char *text = "There is something in the attic.";
+
+    int rv = zrex_matches (regex, text);
+    zsys_info ("matches ? %s", rv ? "YES" : "NO");
 
     return EXIT_SUCCESS;
-
 }
