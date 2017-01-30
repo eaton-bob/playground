@@ -17,4 +17,4 @@ Please add your suggestions.
 
 * [The Atomic Chef](https://www.amazon.com/Atomic-Chef-Other-Design-Technology/dp/0963617869) , since we should learn from mistakes other people made (especially when it comes to safety).
 
-* [The Art of Electronics]
+* [The Art of Electronics](https://www.amazon.com/Atomic-Chef-Other-Design-Technology/dp/0963617869)
