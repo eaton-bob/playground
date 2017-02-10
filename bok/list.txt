@@ -1,0 +1,7 @@
+= List of chapters
+
+ * In protocols we trust
+ * Make models great again (zproto)
+ * Build and deployment sucks (zproject)
+ * Advanced malamute (actor model, ....)
+ * ....?

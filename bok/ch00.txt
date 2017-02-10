@@ -1,0 +1,35 @@
+= In protocols we trust
+
+In a core of every system are protocols (or rules, contracts, laws, ...). Yet
+many computer systems document them badly as they have been added ad-hoc and in
+a big hurry by inoncent developers. Those internal contracts are hard to use,
+impossible to test and they make a developer's life less pleasant.
+
+The core basic of https://42ity.org[42ITy project] are the protocols
+
+== REST API
+
+http://42ity.org/doc/rest/42ity_rest_api.html[RESTfull API] powers user
+interface to the outside world allowing project to be integrated with third
+party applications like user interface, monitoring, asset management and other
+systems.
+
+== Messaging protocols
+
+https://github.com/42ity/fty-proto[fty-proto] is the
+https://github.com/42ity/fty-proto/blob/master/src/fty_proto.bnf[formal
+protocol specification]. As well as the reference implementation of messaging
+protocols available as shared C library, ready for the developers to be used.
+
+== Malamute broker concepts
+- streams
+- subjects
+- STREAM vs MAILBOX vs WORKER
+
+== Three main streams and message types in 42ity
+- METRICS
+- ALERTS
+- ASSETS
+
+== Example of MAILBOX
+- sendmail?
