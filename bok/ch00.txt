@@ -21,13 +21,84 @@ https://github.com/42ity/fty-proto/blob/master/src/fty_proto.bnf[formal
 protocol specification]. As well as the reference implementation of messaging
 protocols available as shared C library, ready for the developers to be used.
 
-== Malamute broker concepts
-- streams
-- subjects
-- STREAM vs MAILBOX vs WORKER
+== Malamute broker
 
-== Three main streams and message types in 42ity
-- METRICS
+While https://zeromq.org[ZeroMQ] is a great end to end brokerless messaging
+platform, in 42ITy we needed something can abstract publish / subscribe and
+request / reply messaging patterns into one socket.
+
+The heart of the system is https://github.com/zeromq/malamute[Malamute broker].
+Written by https://hintjens.com[Peiter Hintjens], editor of Advanced Messaging
+Queuing Protocol 0.9 and author of first and fastest broker
+https://github.com/imatix/openamq[OpenAMQ]. It is a tiny and simple broker providing three major communicating paterns for the clients
+
+=== STREAM DELIVER
+
+The 1:N communication pattern. Malamute client, which wants to publish message
+on a stream will register itself (mlm_client_set_publisher) and starts sending
+messages with given subject. Each client can publish on one stream only.
+
+The subscribed clients can subscribe to one or more streams and a pattern
+regular expression. So they will get messages from given stream where subject
+matches.
+
+    +-------------+      +-------------+      +-------------+
+    |             |      |             |      |             |
+    | Publisher1  |      | Subscriber1 |      | Subscriber2 |
+    | on STREAM   |      | from STREAM |      | from STREAM |
+    |             |      | H.*         |      | X.*         |
+    +-------------+      +-------------+      +-------------+
+    [Subject: Hello]     [Subject: Hello]
+    [World]              [World]
+           |                   ^
+           |                   |
+           V                   |
+    =========================================================
+    |   STREAM                                              |
+    =========================================================
+
+
+=== MAILBOX DELIVER
+=== SERVICE DELIVER
+
+== 42ITy main messages
+
+=== Metrics
+
+Metrics are typically data comes from measured devices, like temperature,
+humidity, current, power, ... . They are usually polled from the target device
+and published on METRICS stream (FTY_PROTO_STREAM_METRICS).
+
+.Metric message
+|===
+|Name   |Type   |Description
+
+|aux
+|hash
+|Auxiliar data
+
+|type
+|string
+|Type of metric send (temperature, humidity, power.load, ...)
+
+|element_src
+|string
+|Name of source element to which metrics are bound to
+
+|value
+|string
+|Value of metric as plain string
+
+|unit
+|string
+|Unit of metric (i.e. C, F or K for temperature)
+
+|ttl
+|number 4
+|Metric time to live seconds (i.e. How long is the metric valid - At the latest how long from now should i get a new one)
+|===
+
+
 - ALERTS
 - ASSETS
 
