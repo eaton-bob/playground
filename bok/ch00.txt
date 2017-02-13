@@ -59,9 +59,20 @@ matches.
 
 
 === MAILBOX DELIVER
-=== SERVICE DELIVER
+
+Each Malamute client register itself with unique MAILBOX name. This is internal
+storage inside broker, where other clients can send messages. Client then CAN
+reply to their MAILBOX. Unlike STREAMs MAILBOX messages are stored inside the broker
+waiting on a client to join.
+
+=== SERVICE DELIVER SERVICE
+Is similar to MAILBOX, however there are usually
+more clients registered as the same worker. Broker then sends incoming requests
+via round robin algortihm, so workers may work in a parallel.
 
 == 42ITy main messages
+
+There are three baisc building blocks for each such app
 
 === Metrics
 
@@ -98,9 +109,80 @@ and published on METRICS stream (FTY_PROTO_STREAM_METRICS).
 |Metric time to live seconds (i.e. How long is the metric valid - At the latest how long from now should i get a new one)
 |===
 
+TODO: document components producing and consimeing metrics, known extended attributes
 
-- ALERTS
-- ASSETS
+=== ALERTS
+
+Alerts are generated from metrics, or by defined states. Those events are less
+common in the system (ideally monitored systems does not produce any). They are
+produced by different components.
+
+.Alert message
+|===
+|Name   |Type   |Description
+
+|aux
+|hash
+|Auxiliar data
+
+|rule
+|string
+|a rule name, that triggers this alert
+
+|element_src
+|string
+|name of the element, where alert was detected. Most of the time is would be asset element name
+
+|state
+|string
+|state of the alert. Possible values are ACTIVE/ACK-WIP/ACK-IGNORE/ACK-PAUSE/ACK-SILENCE/RESOLVED
+
+|severity
+|string
+|severity of the alert. Possible values are INFO/WARNING/CRITICAL
+
+|description
+|string
+|a description of the alert
+
+|time
+|number 8
+|ALERT date/time
+
+|action
+|string
+|list of strings separated by "/" ( EMAIL/SMS ) ( is optional and can be empty )
+|===
+
+TODO: document components producing and consimeing alerts, known extended attributes
+
+=== ASSETS
+Assets contains all the metadata about monitored devices. 42ITy project uses
+key/value storage system, so most of the information are optional data in
+extended attributes of particular asset. A lot of components refuse to work on
+unknown asset, so messages are regularly sent each hour.
+
+.Alert message
+|===
+|Name   |Type   |Description
+
+|name
+|string
+|asset name
+
+|operation
+|string
+|operation name (CREATE, UPDATE, DELETE, INVENTORY, RETIRE)
+
+|aux
+|hash
+|Auxiliar data
+
+|ext
+|hash
+|Extended attributes
+
+TODO: document components producing and consimeing assets, known extended attributes
 
 == Example of MAILBOX
 - sendmail?
