@@ -176,7 +176,7 @@
         COMMAND
     </field>
 
-    <field name = "add" type = "hash">
+    <field name = "aux" type = "hash">
         Additional information.
     </field>
 
@@ -200,7 +200,7 @@
         Command result OK.
     </field>
 
-    <field name = "add" type = "hash">
+    <field name = "aux" type = "hash">
         Additional information.
     </field>
 
