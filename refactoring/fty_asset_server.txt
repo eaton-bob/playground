@@ -1,0 +1,333 @@
+fty_asset_server(3)
+===================
+
+NAME
+----
+fty_asset_server - Class for Asset server, that takes care about distribution of asset information across the system
+
+SYNOPSIS
+--------
+----
+//  Asset server, that takes care about distribution of
+//                                      asset information across the system
+FTY_ASSET_EXPORT void
+    fty_asset_server (zsock_t *pipe, void *args);
+
+//  Self test of this class
+FTY_ASSET_EXPORT void
+    fty_asset_server_test (bool verbose);
+
+Please add '@interface' section in './../src/fty_asset_server.cc'.
+----
+
+DESCRIPTION
+-----------
+
+fty_asset_server - Asset server, that takes care about distribution of asset information across the system
+
+ ASSET PROTOCOL
+
+ ------------------------------------------------------------------------
+ ## Topology request
+
+ power topology request:
+     subject: "TOPOLOGY"
+     message: is a multipart message A/B
+             A = "TOPOLOGY_POWER" - mandatory
+             B = "asset_name" - mandatory
+
+ power topology reply in "OK" case:
+     subject: "TOPOLOGY"
+     message: is a multipart message A/B/D/C1/.../CN
+             A = "TOPOLOGY_POWER" - mandatory
+             B = "asset_name" - mandatory
+             D = "OK" - mandatory
+             Ci = "asset_name" of power source - not mandatory
+                 if there are no power devices
+                  -> message is A/B/D
+
+ power topology reply in "ERROR" case:
+     subject: "TOPOLOGY"
+     message: is a multipart message A/B/D/E
+             A = "TOPOLOGY_POWER" - mandatory
+             B = "asset_name" - mandatory
+             D = "ERROR" - mandatory
+             E = "ASSET_NOT_FOUND"/"INTERNAL_ERROR" - mandatory
+
+
+------------------------------------------------------------------------
+## Asset manipulation protocol
+
+REQ:
+    subject: "ASSET_MANIPULATION"
+    Message is a fty protocol (fty_proto_t) message
+
+    *) fty_proto ASSET message
+
+    where 'operation' is one of [ create | update | delete | retire ].
+    Asset messages with different operation value are discarded and not replied to.
+
+REP:
+    subject: same as in REQ
+    Message is a multipart string message:
+
+    * OK/<asset_id>
+    * ERROR/<reason>
+
+    where:
+ (OPTIONAL)     <asset_id>  = asset id (in case of create, update operation)
+            <reason>    = Error message/code TODO
+
+Note: in REQ message certain asset information are encoded as follows
+
+  'ext' field
+      Power Links - key: "power_link.<device_name>", value: "<first_outlet_num>/<second_outlet_num>", i.e. 1 --> 2 == "1/2"
+      Groups - key: "group", value: "<group_name_1>/.../<group_name_N>"
+
+
+------------------------------------------------------------------------
+## ASSETS in container
+
+REQ:
+    subject: "ASSETS_IN_CONTAINER"
+    Message is a multipart string message
+
+    * GET/<container name>/<type 1>/.../<type n>
+
+    where:
+        <container name>        = Name of the container things belongs to that
+                                  when empty, no container is used, so all assets are take in account
+        <type X>                = Type or subtype to be returned. Possible values are
+                                  ups
+                                  TODO: add more
+                                  when empty, no filtering is done
+REP:
+    subject: "ASSETS_IN_CONTAINER"
+    Message is a multipart message:
+
+    * OK                         = empty container
+    * OK/<asset 1>/.../<asset N> = non-empty
+    * ERROR/<reason>
+
+    where:
+        <reason>          = ASSET_NOT_FOUND / INTERNAL_ERROR / BAD_COMMAND
+
+REQ:
+    subject: "ASSETS"
+    Message is a multipart string message
+
+    * GET/<type 1>/.../<type n>
+
+    where:
+        <type X>                = Type or subtype to be returned. Possible values are
+                                  ups
+                                  TODO: add more
+                                  when empty, no filtering is done
+REP:
+    subject: "ASSETS"
+    Message is a multipart message:
+
+    * OK                         = empty container
+    * OK/<asset 1>/.../<asset N> = non-empty
+    * ERROR/<reason>
+
+    where:
+        <reason>          = ASSET_NOT_FOUND / INTERNAL_ERROR / BAD_COMMAND
+------------------------------------------------------------------------
+## REPUBLISH
+
+REQ:
+    subject: "REPUBLISH"
+    Message is a multipart string message
+
+    /asset1/asset2/asset3       - republish asset information about asset1 asset2 and asset3
+    /$all                       - republish information about all assets
+
+
+EXAMPLE
+-------
+.From fty_asset_server_test method
+----
+// Test #1:  Simple create/destroy test
+{
+    zsys_debug ("fty-asset-server-test:Test #1");
+    fty_asset_server_t *self = fty_asset_server_new ();
+    assert (self);
+    fty_asset_server_destroy (&self);
+    zsys_info ("fty-asset-server-test:Test #1: OK");
+}
+
+static const char* endpoint = "inproc://fty_asset_server-test";
+
+zactor_t *server = zactor_new (mlm_server, (void*) "Malamute");
+assert ( server != NULL );
+zstr_sendx (server, "BIND", endpoint, NULL);
+if (verbose)
+            zstr_send (server, "VERBOSE");
+
+mlm_client_t *ui = mlm_client_new ();
+mlm_client_connect (ui, endpoint, 5000, "fty-asset-ui");
+mlm_client_set_producer (ui, "ASSETS-TEST");
+mlm_client_set_consumer (ui, "ASSETS-TEST", ".*");
+
+const char *asset_server_test_name = "asset_agent_test";
+zactor_t *asset_server = zactor_new (fty_asset_server, (void*) asset_server_test_name);
+if (verbose) {
+    zstr_send (asset_server, "VERBOSE");
+}
+zstr_sendx (asset_server, "CONNECTSTREAM", endpoint, NULL);
+zsock_wait (asset_server);
+zstr_sendx (asset_server, "PRODUCER", "ASSETS-TEST", NULL);
+zsock_wait (asset_server);
+zstr_sendx (asset_server, "CONSUMER", "ASSETS-TEST", ".*", NULL);
+zsock_wait (asset_server);
+zstr_sendx (asset_server, "CONNECTMAILBOX", endpoint, NULL);
+zsock_wait (asset_server);
+
+static const char *asset_name = "DC-1";
+// Test #2: subject ASSET_MANIPULATION, message fty_proto_t *asset
+{
+    zsys_debug ("fty-asset-server-test:Test #2");
+    const char* subject = "ASSET_MANIPULATION";
+    zmsg_t *msg = fty_proto_encode_asset (
+            NULL,
+            asset_name,
+            FTY_PROTO_ASSET_OP_CREATE,
+            NULL);
+    int rv = mlm_client_sendto (ui, asset_server_test_name, subject, NULL, 5000, &msg);
+    assert (rv == 0);
+    zmsg_t *reply = mlm_client_recv (ui);
+    assert (streq (mlm_client_subject (ui), subject));
+    assert (zmsg_size (reply) == 2);
+    char *str = zmsg_popstr (reply);
+    assert (streq (str, "OK"));
+    zstr_free (&str);
+    str = zmsg_popstr (reply);
+    assert (streq (str, asset_name));
+    zstr_free (&str);
+    zmsg_destroy (&reply) ;
+    zsys_info ("fty-asset-server-test:Test #2: OK");
+}
+
+// Test #3: message fty_proto_t *asset
+{
+    zsys_debug ("fty-asset-server-test:Test #3");
+    zmsg_t *msg = fty_proto_encode_asset (
+        NULL,
+        asset_name,
+        FTY_PROTO_ASSET_OP_UPDATE,
+        NULL);
+    int rv = mlm_client_send (ui, "update-test", &msg);
+    assert (rv == 0);
+    zclock_sleep (200);
+    zsys_info ("fty-asset-server-test:Test #3: OK");
+}
+// Test #4: subject TOPOLOGY, message TOPOLOGY_POWER
+{
+    zsys_debug ("fty-asset-server-test:Test #4");
+    const char* subject = "TOPOLOGY";
+    const char *command = "TOPOLOGY_POWER";
+    zmsg_t *msg = zmsg_new();
+    zmsg_addstr (msg, command);
+    zmsg_addstr (msg, asset_name);
+    int rv = mlm_client_sendto (ui, asset_server_test_name, subject, NULL, 5000, &msg);
+    assert (rv == 0);
+    zmsg_t *reply = mlm_client_recv (ui);
+    assert (streq (mlm_client_subject (ui), subject));
+    assert (zmsg_size (reply) == 3);
+    char *str = zmsg_popstr (reply);
+    assert (streq (str, command));
+    zstr_free (&str);
+    str = zmsg_popstr (reply);
+    assert (streq (str, asset_name));
+    zstr_free (&str);
+    str = zmsg_popstr (reply);
+    assert (streq (str, "OK"));
+    zstr_free (&str);
+    zmsg_destroy (&reply) ;
+    zsys_info ("fty-asset-server-test:Test #4: OK");
+}
+// Test #5: subject ASSETS_IN_CONTAINER, message GET
+{
+    zsys_debug ("fty-asset-server-test:Test #5");
+    const char* subject = "ASSETS_IN_CONTAINER";
+    const char *command = "GET";
+    zmsg_t *msg = zmsg_new();
+    zmsg_addstr (msg, command);
+    zmsg_addstr (msg, asset_name);
+    int rv = mlm_client_sendto (ui, asset_server_test_name, subject, NULL, 5000, &msg);
+    assert (rv == 0);
+    zmsg_t *reply = mlm_client_recv (ui);
+    assert (streq (mlm_client_subject (ui), subject));
+    assert (zmsg_size (reply) == 1);
+    char *str = zmsg_popstr (reply);
+    assert (streq (str, "OK"));
+    zstr_free (&str);
+    zmsg_destroy (&reply) ;
+    zsys_info ("fty-asset-server-test:Test #5: OK");
+}
+// Test #6: subject ASSETS, message GET
+{
+    zsys_debug ("fty-asset-server-test:Test #6");
+    const char* subject = "ASSETS_IN_CONTAINER";
+    const char *command = "GET";
+    zmsg_t *msg = zmsg_new();
+    zmsg_addstr (msg, command);
+    zmsg_addstr (msg, asset_name);
+    int rv = mlm_client_sendto (ui, asset_server_test_name, subject, NULL, 5000, &msg);
+    assert (rv == 0);
+    zmsg_t *reply = mlm_client_recv (ui);
+    assert (streq (mlm_client_subject (ui), subject));
+    assert (zmsg_size (reply) == 1);
+    char *str = zmsg_popstr (reply);
+    assert (streq (str, "OK"));
+    zstr_free (&str);
+    zmsg_destroy (&reply) ;
+    zsys_info ("fty-asset-server-test:Test #6: OK");
+}
+// Test #7: message REPEAT_ALL
+{
+    zsys_debug ("fty-asset-server-test:Test #7");
+    const char *command = "REPEAT_ALL";
+    int rv = zstr_sendx (asset_server, command, NULL);
+    assert (rv == 0);
+    zclock_sleep (200);
+    zsys_info ("fty-asset-server-test:Test #7: OK");
+}
+// Test #8: subject REPUBLISH, message $all
+{
+    zsys_debug ("fty-asset-server-test:Test #8");
+    const char *subject = "REPUBLISH";
+    zmsg_t *msg = zmsg_new();
+    zmsg_addstr (msg, "$all");
+    int rv = mlm_client_sendto (ui, asset_server_test_name, subject, NULL, 5000, &msg);
+    assert (rv == 0);
+    zclock_sleep (200);
+    zsys_info ("fty-asset-server-test:Test #8: OK");
+}
+
+zactor_t *autoupdate_server = zactor_new (fty_asset_autoupdate_server, (void*) "asset-autoupdate-test");
+if (verbose)
+    zstr_send (autoupdate_server, "VERBOSE");
+zstr_sendx (autoupdate_server, "CONNECT", endpoint, NULL);
+zsock_wait (autoupdate_server);
+zstr_sendx (autoupdate_server, "PRODUCER", "ASSETS-TEST", NULL);
+zsock_wait (autoupdate_server);
+zstr_sendx (autoupdate_server, "ASSET_AGENT_NAME", asset_server_test_name, NULL);
+
+// Test #9: message WAKEUP
+{
+    zsys_debug ("fty-asset-server-test:Test #9");
+    const char *command = "WAKEUP";
+    int rv = zstr_sendx (autoupdate_server, command, NULL);
+    assert (rv == 0);
+    zclock_sleep (200);
+    zsys_info ("fty-asset-server-test:Test #9: OK");
+}
+
+zactor_destroy (&autoupdate_server);
+zactor_destroy (&asset_server);
+mlm_client_destroy (&ui);
+zactor_destroy (&server);
+
+----
