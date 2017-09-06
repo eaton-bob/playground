@@ -1,0 +1,25 @@
+Agent name;Start command;Hardcoded configuration
+fty-alert-engine;/usr/bin/fty-alert-engine /etc/fty-alert-engine/fty-alert-engine.cfg;no
+fty-alert-flexible;/usr/bin/fty-alert-flexible --rules '/var/lib/fty/fty-alert-flexible/rules';yes
+fty-alert-list;/usr/bin/fty-alert-list;no
+fty-asset;/usr/bin/fty-asset /etc/fty-asset/fty-asset.cfg;no
+fty-db-engine;/usr/lib/mysql/rcmysql start;yes
+fty-db-init;/usr/libexec/bios/db-init;yes
+fty-discovery;/usr/bin/fty-discovery --agent;yes
+fty-email;/usr/bin/fty-email --config /etc/fty-email/fty-email.cfg;yes
+fty-info;/usr/bin/fty-info -c /etc/fty-info/fty-info.cfg;yes
+fty-kpi-power-uptime;/usr/bin/fty-kpi-power-uptime;no
+fty-mdns-sd;/usr/bin/fty-mdns-sd -c /etc/fty-mdns-sd/fty-mdns-sd.cfg;no
+fty-metric-cache;/usr/bin/fty-metric-cache;yes
+fty-metric-composite-configurator;/usr/bin/fty-metric-composite-configurator;yes
+fty-metric-composite@;/usr/bin/fty-metric-composite /var/lib/fty/fty-metric-composite/%i.cfg;no
+fty-metric-compute;/usr/bin/fty-metric-compute;yes
+fty-metric-store-cleaner;/usr/bin/fty-metric-store-cleaner /etc/fty-metric-store/fty-metric-store.cfg;yes
+fty-metric-store;/usr/bin/fty-metric-store /etc/fty-metric-store/fty-metric-store.cfg;yes
+fty-metric-tpower;/usr/bin/fty-metric-tpower /etc/fty-metric-tpower/fty-metric-tpower.cfg;no
+fty-nut-configurator;/usr/bin/fty-nut-configurator;yes
+fty-nut;/usr/bin/fty-nut --mapping-file ${prefix}/share/fty-nut/mapping.conf --state-file '/var/lib/fty/fty-nut/state_file';N/A
+fty-outage;/usr/bin/fty-outage /etc/fty-outage/fty-outage.cfg;yes
+fty-sensor-env;/usr/bin/fty-sensor-env;no
+fty-sensor-gpio;/usr/bin/fty-sensor-gpio -c /etc/fty-sensor-gpio/fty-sensor-gpio.cfg;yes
+fty-tntnet@;/usr/bin/tntnet -c /etc/tntnet/%i.xml;N/A

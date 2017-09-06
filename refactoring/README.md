@@ -5,3 +5,6 @@
 
 ## Automatic Generation of fty Documentation
 * fty_asset_server.txt
+
+## Agents - Configuration
+* fty_agents_configuration.csv - description of agents configuration in simple table
