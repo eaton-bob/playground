@@ -1,0 +1,22 @@
+Agent name;Private headers;Public headers;Description quality
+fty-alert-engine;15;7;50%
+fty-alert-flexible;4;3;50%
+fty-alert-list;3;3;25%
+fty-asset;10;5;75%
+fty-discovery;11;3;75%
+fty-email;6;3;95%
+fty-info;3;4;75%
+fty-kpi-power-uptime;3;3;50%
+fty-mdns-sd;2;3;75%
+fty-metric-cache;4;3;75%
+fty-metric-composite;7;4;50%
+fty-metric-compute;3;3;50%
+fty-metric-snmp;7;4;50%
+fty-metric-store;6;3;75%
+fty-metric-tpower;8;3;50%
+fty-nut;18;7;25%
+fty-outage;2;3;50%
+fty-proto;2;3;100%
+fty-rest;52;5;75%
+fty-sensor-env;1;4;50%
+fty-sensor-gpio;1;6;90%

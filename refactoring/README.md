@@ -16,3 +16,6 @@
 
 ## Agents - Configuration
 * fty_agents_configuration.csv - description of agents configuration in simple table
+
+## Agents - Interface
+* fty_agents_headers.csv - description of agents headers in simple table
